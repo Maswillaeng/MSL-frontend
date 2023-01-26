@@ -1,0 +1,52 @@
+import { Editor } from "react-draft-wysiwyg";
+
+const ModifyContent = ({ editorState, setEditorState }) => {
+  const onEditorStateChange = (editorState) => {
+    setEditorState(editorState);
+  };
+
+  const uploadImageCallBack = (file) => {
+    // let uploadedImages = uploadedImage;
+    const imageObject = {
+      file: file,
+      localSrc: URL.createObjectURL(file),
+    };
+    // uploadedImages.push(imageObject);
+    // setUploadedImages(uploadedImages);
+    return new Promise((resolve, reject) => {
+      resolve({ data: { link: imageObject.localSrc } });
+    });
+  };
+  return (
+    <div>
+      <Editor
+        toolbarStyle={{ top: 0, zIndex: "2" }}
+        editorStyle={{ overflowY: "scroll", height: "350px" }}
+        wrapperClassName="wrapper-class"
+        editorClassName="editor"
+        toolbarClassName="toolbar-class"
+        toolbar={{
+          list: { inDropdown: true },
+          textAlign: { inDropdown: true },
+          link: { inDropdown: true },
+          history: { inDropdown: false },
+          image: {
+            uploadCallback: uploadImageCallBack,
+            uploadEnabled: true,
+            previewImage: true,
+            defaultSize: { width: 100, height: 100 },
+            alt: { present: true, mandatory: true },
+          },
+        }}
+        placeholder="내용을 작성해주세요."
+        localization={{
+          locale: "ko",
+        }}
+        editorState={editorState}
+        onEditorStateChange={onEditorStateChange}
+      />
+    </div>
+  );
+};
+
+export default ModifyContent;

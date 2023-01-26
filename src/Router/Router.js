@@ -4,6 +4,8 @@ import BoardCreate from "../pages/BoardCreate";
 import BoardDetail from "../pages/BoardDetail";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import ModifyBoard from "../pages/ModifyBoard";
+import MyPage from "../pages/MyPage";
 import Signup from "../pages/Signup";
 import Root from "../Root";
 
@@ -17,21 +19,26 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "join",
+        path: "sign",
         element: <Signup />,
       },
       { path: "login", element: <Login /> },
       {
-        path: "create-post",
+        path: "post/create",
         element: <BoardCreate />,
       },
+      { path: "post/manage/:postId", element: <ModifyBoard /> },
       {
-        path: "posts",
+        path: "post/:postPage",
         element: <Board />,
       },
       {
-        path: "posts/:postId",
+        path: "post/detail/:postId",
         element: <BoardDetail />,
+      },
+      {
+        path: "users/:userId",
+        element: <MyPage />,
       },
     ],
   },

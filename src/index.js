@@ -4,13 +4,16 @@ import reportWebVitals from "./reportWebVitals";
 import Root from "./Root";
 import { RouterProvider } from "react-router-dom";
 import router from "./Router/Router";
+import { PostProvider } from "./context/post-context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-    <Root />
-  </React.StrictMode>
+  <>
+    <PostProvider>
+      <RouterProvider router={router} />
+      <Root />
+    </PostProvider>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
