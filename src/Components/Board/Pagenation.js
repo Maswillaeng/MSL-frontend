@@ -8,18 +8,18 @@ const Pagenation = ({ postPage, totalPage }) => {
     const currentPage = postPage;
     const nextPage =
       +currentPage + 10 > +totalPage ? totalPage : +currentPage + 10;
-    navigation(`/post/${nextPage}`);
+    navigation(`/post/page?currentPage=${nextPage}`);
   };
 
   const changePageToPrev = () => {
     const currentPage = postPage;
     const nextPage = +currentPage - 10 < 1 ? 1 : +currentPage - 10;
-    navigation(`/post/${nextPage}`);
+    navigation(`/post/page?currentPage=${nextPage}`);
   };
 
   const changePageOfTargetNum = (e) => {
     const nextPage = e.target.id;
-    navigation(`/post/${nextPage}`);
+    navigation(`/post/page?currentPage=${nextPage}`);
   };
   return (
     <div>

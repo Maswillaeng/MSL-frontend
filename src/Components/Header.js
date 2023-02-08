@@ -41,7 +41,7 @@ const Header = () => {
       {isLoggedIn ? (
         <>
           <div className=" md:flex md:flex-row md:justify-evenly md:gap-10 ">
-            <Link to={"/post/page/1"}>
+            <Link to={"/post/page?currentPage=1"}>
               <button className="button">게시판</button>
             </Link>
             <Link to={"/users/1"}>
@@ -56,7 +56,7 @@ const Header = () => {
         </>
       ) : (
         <div className="flex justify-evenly gap-10">
-          <Link to={"/post/page/1"}>
+          <Link to={"/post/page?currentPage=1"}>
             <button className="button">게시판</button>
           </Link>
           <Link to={"/login"}>

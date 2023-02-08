@@ -31,7 +31,7 @@ const BoardCreate = () => {
     await createPostFetch("정채운", title, editorToHtml);
     setIsLoading(false);
     localStorage.clear();
-    navigation("/post/page/1");
+    navigation("/");
   };
 
   //로컬스토리지에 데이터가 있으면 물어보기 없다면 리턴

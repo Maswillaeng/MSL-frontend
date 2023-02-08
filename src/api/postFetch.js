@@ -81,7 +81,7 @@ export const getPostDetailFetch = async (postId) => {
 
 export const getPostListFetch = async (postPage) => {
   try {
-    const response = await fetch(`${BASE_URL}/post/page/${postPage}`);
+    const response = await fetch(`${BASE_URL}/post/page${postPage}`);
     if (response.ok) {
       return await response.json();
     } else {

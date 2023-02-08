@@ -7,6 +7,7 @@ import "../styles/input.css";
 
 const Board = () => {
   const categoryList = ["전체", "레시피", "추천", "자유"];
+
   return (
     <>
       <Header />

@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       },
       { path: "post/manage/:postId", element: <ModifyBoard /> },
       {
-        path: "post/page/:postPage",
+        path: "post/page",
         element: <Board />,
       },
       {
