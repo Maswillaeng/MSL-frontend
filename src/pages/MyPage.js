@@ -9,7 +9,7 @@ import Category from "../Components/UI/Category";
 import MyPostList from "../Components/MyPage/MyPostList";
 import Loading from "../Components/Loading";
 import { getUserInfoFetch, userPostListFetch } from "../api/userFetch";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
   const { userInfo, getUserInfo } = useContext(UserContext);
