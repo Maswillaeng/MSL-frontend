@@ -7,6 +7,7 @@ export const createPostFetch = async (nickName, title, editorToHtml) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "same-origin",
       body: JSON.stringify({
         nickName,
         title,

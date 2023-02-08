@@ -1,7 +1,7 @@
 import { createContext, useReducer, useState } from "react";
 
 const UserContext = createContext({
-  isLoggedIn: true,
+  isLoggedIn: false,
   setIsLoggedIn: () => {},
   userInfo: {},
   getUserInfo: () => {},
@@ -36,7 +36,7 @@ const userInfoReducer = (state, { type, val }) => {
 };
 
 export const UserProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, dispatchUserInfo] = useReducer(userInfoReducer, {
     email: "",
     nickName: "",
