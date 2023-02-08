@@ -2,6 +2,7 @@ const PostComment = ({ nickName }) => {
   const submitComment = (e) => {
     e.preventDefault();
   };
+
   return (
     <div className="w-full mt-10">
       <ul className="border-2 border-main basis-[100%] px-14 py-10 rounded-[10px] w-full max-h-[400px] h-auto">

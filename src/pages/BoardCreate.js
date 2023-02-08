@@ -9,11 +9,13 @@ import Title from "../Components/CreateBoard/Title";
 import Content from "../Components/CreateBoard/Content";
 import draftToHtml from "draftjs-to-html";
 import { createPostFetch } from "../api/postFetch";
+import Loading from "../Components/Loading";
 
 const BoardCreate = () => {
   const navigation = useNavigate();
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [isLoading, setIsLoading] = useState(false);
 
   const editorToHtml = draftToHtml(
     convertToRaw(editorState.getCurrentContent())
@@ -25,9 +27,11 @@ const BoardCreate = () => {
       alert("제목을 입력해주세요");
       return;
     }
-    createPostFetch("정채운", title, editorToHtml);
+    setIsLoading(true);
+    await createPostFetch("정채운", title, editorToHtml);
+    setIsLoading(false);
     localStorage.clear();
-    navigation("/post/1");
+    navigation("/post/page/1");
   };
 
   //로컬스토리지에 데이터가 있으면 물어보기 없다면 리턴
@@ -54,30 +58,33 @@ const BoardCreate = () => {
     }
   }, []);
   return (
-    <div>
-      <Header />
-      <div className="min-w-[900px]">
-        <form
-          className="mt-20 mx-[200px] overflow-hidden"
-          onSubmit={submitPostData}
-        >
-          <Title title={title} setTitle={setTitle} />
-          <Content
-            editorState={editorState}
-            setEditorState={setEditorState}
-            editorToHtml={editorToHtml}
-          />
-          <footer className="absolute left-0 bottom-0 bg-sub w-screen h-16">
-            <button
-              type="submit"
-              className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"
-            >
-              완료
-            </button>
-          </footer>
-        </form>
+    <>
+      <div>
+        <Header />
+        <div className="min-w-[900px]">
+          <form
+            className="mt-20 mx-[200px] overflow-hidden"
+            onSubmit={submitPostData}
+          >
+            <Title title={title} setTitle={setTitle} />
+            <Content
+              editorState={editorState}
+              setEditorState={setEditorState}
+              editorToHtml={editorToHtml}
+            />
+            <footer className="absolute left-0 bottom-0 bg-sub w-screen h-16">
+              <button
+                type="submit"
+                className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"
+              >
+                완료
+              </button>
+            </footer>
+          </form>
+        </div>
       </div>
-    </div>
+      {isLoading ? <Loading /> : null}
+    </>
   );
 };
 

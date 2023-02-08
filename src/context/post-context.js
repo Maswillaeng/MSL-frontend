@@ -2,7 +2,7 @@ import { createContext, useReducer } from "react";
 
 const PostContext = createContext({
   postInfo: {},
-  updatePostInfo: () => {},
+  getPostInfo: () => {},
 });
 
 const postInfoReducer = (state, { type, val }) => {
@@ -12,6 +12,7 @@ const postInfoReducer = (state, { type, val }) => {
       copyState.nickName = val.nickName;
       copyState.title = val.title;
       copyState.content = val.content;
+      copyState.userImage = val.userImage ?? copyState.userImage;
       return copyState;
     default:
       return null;
@@ -23,17 +24,18 @@ export const PostProvider = (props) => {
     nickName: "",
     title: "",
     content: "",
+    userImage: "",
   });
 
-  const updatePostInfo = (nickName, title, content) => {
+  const getPostInfo = (nickName, title, content, userImage) => {
     dispatchPostInfo({
       type: "UPDATE_POST",
-      val: { nickName, title, content },
+      val: { nickName, title, content, userImage },
     });
   };
 
   return (
-    <PostContext.Provider value={{ updatePostInfo, postInfo }}>
+    <PostContext.Provider value={{ getPostInfo, postInfo }}>
       {props.children}
     </PostContext.Provider>
   );

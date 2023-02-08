@@ -1,16 +1,19 @@
 import "../styles/input.css";
 import { Link } from "react-router-dom";
-import Button from "./UI/Button";
-import { useState } from "react";
+import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faWineGlass } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import UserContext from "../context/user-context";
 
 const Header = () => {
-  const [isLoggedIn] = useState(true);
+  const { isLoggedIn } = useContext(UserContext);
 
-  const clickMenuBar = () => {};
+  const logoutHandler = async () => {
+    const response = await fetch("http://localhost:3000", {
+      method: "POST",
+    });
+  };
   return (
     <div className="h-16 flex justify-evenly items-center bg-sub sticky top-0">
       <div className="text-main font-bold text-3xl">
@@ -38,27 +41,29 @@ const Header = () => {
       {isLoggedIn ? (
         <>
           <div className=" md:flex md:flex-row md:justify-evenly md:gap-10 ">
-            <Link to={"/post/1"}>
-              <Button text="게시판" />
+            <Link to={"/post/page/1"}>
+              <button className="button">게시판</button>
             </Link>
             <Link to={"/users/1"}>
-              <Button text="마이 페이지" />
+              <button className="button">마이페이지</button>
             </Link>
             <Link to={"/logout"}>
-              <Button text="로그아웃" />
+              <button onClick={logoutHandler} className="button">
+                로그아웃
+              </button>
             </Link>
           </div>
         </>
       ) : (
         <div className="flex justify-evenly gap-10">
-          <Link to={"/post/1"}>
-            <Button text="게시판" />
+          <Link to={"/post/page/1"}>
+            <button className="button">게시판</button>
           </Link>
           <Link to={"/login"}>
-            <Button text="Login" />
+            <button className="button">로그인</button>
           </Link>
           <Link to={"/sign"}>
-            <Button text="Join" />
+            <button className="button">회원가입</button>
           </Link>
         </div>
       )}

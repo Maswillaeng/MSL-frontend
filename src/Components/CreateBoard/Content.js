@@ -22,8 +22,6 @@ const Content = ({ editorState, setEditorState, editorToHtml }) => {
       resolve({ data: { link: imageObject.localSrc } });
     });
   };
-  //사용자가 이미지를 업로드 해서 그럼 배열에 쌓이겠지 다시 불러올 때
-  console.log(uploadedImage);
 
   useEffect(() => {
     const saveContent = setTimeout(() => {

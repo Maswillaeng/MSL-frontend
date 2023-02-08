@@ -8,6 +8,7 @@ import ModifyBoard from "../pages/ModifyBoard";
 import MyPage from "../pages/MyPage";
 import Signup from "../pages/Signup";
 import Root from "../Root";
+import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       },
       { path: "post/manage/:postId", element: <ModifyBoard /> },
       {
-        path: "post/:postPage",
+        path: "post/page/:postPage",
         element: <Board />,
       },
       {
@@ -39,8 +40,10 @@ const router = createBrowserRouter([
       {
         path: "users/:userId",
         element: <MyPage />,
+        errorElement: <NotFound />,
       },
     ],
+    errorElement: <NotFound />,
   },
 ]);
 

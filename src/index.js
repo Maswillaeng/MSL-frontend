@@ -5,14 +5,20 @@ import Root from "./Root";
 import { RouterProvider } from "react-router-dom";
 import router from "./Router/Router";
 import { PostProvider } from "./context/post-context";
+import { UserProvider } from "./context/user-context";
+import { SignInputProvider } from "./context/check-signInput-context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <PostProvider>
-      <RouterProvider router={router} />
-      <Root />
-    </PostProvider>
+    <UserProvider>
+      <PostProvider>
+        <SignInputProvider>
+          <RouterProvider router={router} />
+          <Root />
+        </SignInputProvider>
+      </PostProvider>
+    </UserProvider>
   </>
 );
 

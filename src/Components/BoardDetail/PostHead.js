@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { deletePostFetch } from "../../api/postFetch";
 
-const PostHead = ({ nickName, postId }) => {
+const PostHead = ({ nickName, postId, userImage, userInfo }) => {
   const navigation = useNavigate();
   const menuListRef = useRef(null);
   const copyUrlListRef = useRef(null);
@@ -29,7 +29,8 @@ const PostHead = ({ nickName, postId }) => {
   const deletePost = async () => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (answer) {
-      await deletePostFetch(postId, navigation);
+      await deletePostFetch(postId);
+      navigation("/post/page/1");
     } else {
       navigation(`/post/detail/${postId}`);
     }
@@ -37,7 +38,11 @@ const PostHead = ({ nickName, postId }) => {
 
   return (
     <div className="flex">
-      <div className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 profile_img"></div>
+      <img
+        className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
+        alt="해당 게시물 유저 이미지"
+        src={userImage}
+      />
       <ul className="basis-[80%]">
         <li>{nickName}</li>
         <li>작성일자</li>
@@ -50,8 +55,12 @@ const PostHead = ({ nickName, postId }) => {
         <li className="cursor-pointer relative" onClick={showMenu}>
           <FontAwesomeIcon icon={faEllipsisV} />
           <ul className="hidden absolute w-10" ref={menuListRef}>
-            <li onClick={getModifyPage}>수정</li>
-            <li onClick={deletePost}>삭제</li>
+            {userInfo.nickName === nickName ? (
+              <>
+                <li onClick={getModifyPage}>수정</li>
+                <li onClick={deletePost}>삭제</li>
+              </>
+            ) : null}
             <li>신고</li>
           </ul>
         </li>

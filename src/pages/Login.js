@@ -1,34 +1,80 @@
+import { useNavigate } from "react-router-dom";
+import Input from "../Components/UI/Input";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
 import "../styles/input.css";
+import { useContext, useRef, useState } from "react";
+import UserContext from "../context/user-context";
+import Loading from "../Components/Loading";
+import { loginFetch } from "../api/userFetch";
 
 const Login = () => {
+  const { setIsLoggedIn, getUserInfo } = useContext(UserContext);
+  const navigation = useNavigate();
+  const idRef = useRef(null);
+  const passwordRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const submitLoginForm = async (e) => {
+    e.preventDefault();
+    const { value: idValue } = idRef.current;
+    const { value: passwordValue } = passwordRef.current;
+    if (idValue === "" || passwordValue === "") {
+      setError(true);
+      setErrorMessage("아이디 또는 비밀번호를 입력해주세요");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const data = await loginFetch(idValue, passwordValue);
+      getUserInfo(data);
+      setIsLoggedIn(true);
+    } catch (error) {
+      setError(true);
+      setErrorMessage(error.message);
+    }
+    setIsLoading(false);
+  };
   return (
-    <div className="flex flex-col items-center mt-16">
-      <div>Maswillaeng</div>
-      <div>
-        <label className="flex">
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-          >
-            <path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z" />
-          </svg>
-          <input placeholder="아이디(이메일)" />
-        </label>
-        <label className="flex">
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-          >
-            <path d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" />
-          </svg>
-          <input placeholder="비밀번호" />
-        </label>
+    <>
+      <div className="flex flex-col items-center mt-20">
+        <h1
+          onClick={() => navigation("/")}
+          className="font-bold text-3xl text-main mb-10 cursor-pointer"
+        >
+          Maswillaeng
+        </h1>
+        <form onSubmit={submitLoginForm} className="flex flex-col">
+          <Input
+            inputRef={idRef}
+            icon={faEnvelope}
+            placeholder="아이디(이메일)"
+            type="text"
+          />
+          <Input
+            inputRef={passwordRef}
+            icon={faLock}
+            placeholder="비밀번호"
+            type="password"
+          />
+          {error && (
+            <span className="text-sm text-red-600">{errorMessage}</span>
+          )}
+          <button className="button" type="submit">
+            로그인
+          </button>
+        </form>
+        <button
+          className="text-sm mt-2 hover:border-b-2 border-black"
+          onClick={() => navigation("/sign")}
+        >
+          회원가입&rarr;
+        </button>
       </div>
-    </div>
+      {isLoading ? <Loading /> : null}
+    </>
   );
 };
 

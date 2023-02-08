@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "http://localhost:8080";
 
 export const createPostFetch = async (nickName, title, editorToHtml) => {
   try {
@@ -27,7 +27,8 @@ export const updatePostFetch = async (
   nickName,
   title,
   editorToHtml,
-  postId
+  postId,
+  userImage
 ) => {
   try {
     const response = await fetch(`${BASE_URL}/post/${postId}`, {
@@ -39,6 +40,7 @@ export const updatePostFetch = async (
         nickName,
         title,
         content: editorToHtml,
+        userImage,
       }),
     });
     if (response.ok) {
@@ -51,14 +53,12 @@ export const updatePostFetch = async (
   }
 };
 
-export const deletePostFetch = async (postId, navigation) => {
+export const deletePostFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/${postId}`, {
+    const response = await fetch(`${BASE_URL}/post/${postId}`, {
       method: "DELETE",
     });
-    if (response.ok) {
-      navigation("/post/1");
-    } else {
+    if (!response.ok) {
       throw new Error("알 수 없는 에러");
     }
   } catch (error) {
@@ -81,7 +81,7 @@ export const getPostDetailFetch = async (postId) => {
 
 export const getPostListFetch = async (postPage) => {
   try {
-    const response = await fetch(`${BASE_URL}/post${postPage}`);
+    const response = await fetch(`${BASE_URL}/post/page/${postPage}`);
     if (response.ok) {
       return await response.json();
     } else {

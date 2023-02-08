@@ -13,7 +13,7 @@ import PostContext from "../context/post-context";
 
 const ModifyBoard = () => {
   const postCtx = useContext(PostContext);
-  const { title, content } = postCtx.postInfo;
+  const { title, content, userImage } = postCtx.postInfo;
   const { postId } = useParams();
   const navigation = useNavigate();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -21,8 +21,10 @@ const ModifyBoard = () => {
 
   useEffect(() => {
     const getPostData = async () => {
-      const { nickName, title, content } = await getPostDetailFetch(postId);
-      postCtx.updatePostInfo(nickName, title, content);
+      const { nickName, title, content, userImage } = await getPostDetailFetch(
+        postId
+      );
+      postCtx.getPostInfo(nickName, title, content, userImage);
     };
     getPostData();
   }, [postId]);
@@ -49,7 +51,13 @@ const ModifyBoard = () => {
       alert("제목을 입력해주세요");
       return;
     }
-    await updatePostFetch("정채운", submitTitle, editorToHtml, postId);
+    await updatePostFetch(
+      "정채운",
+      submitTitle,
+      editorToHtml,
+      postId,
+      userImage
+    );
     navigation(`/post/detail/${postId}`);
   };
   return (

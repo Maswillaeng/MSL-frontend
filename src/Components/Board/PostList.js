@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getPostListFetch } from "../../api/postFetch";
 import Pagenation from "./Pagenation";
+import Loading from "../Loading";
 
 const PostList = () => {
   const { postPage } = useParams();
   const navigation = useNavigate();
   const [post, setPost] = useState([]);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(10);
   const [isLodding, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -20,28 +21,26 @@ const PostList = () => {
     };
     getPostListData();
   }, [postPage]);
-
-  const toDetailPage = (e) => {
-    const { id } = e.target.closest(".list");
-    navigation(`/post/detail/${id}`);
-  };
   return (
     <>
       {isLodding ? (
-        <div className="flex justify-center text-2xl">Loading...</div>
+        <Loading />
       ) : (
         <>
           <div className="mb-7">
             <ul className="flex flex-col gap-3">
-              {post.map((ele, index) => (
+              {post.map((ele) => (
                 <li className="list" id={ele.post_id} key={ele.post_id}>
                   <ul className="grid grid-cols-[50px_100px_minmax(200px,_1fr)_100px_100px]">
-                    <li className="text-center">{index + 1}</li>
+                    <li className="text-center">{ele.post_id}</li>
                     <li className="text-center">레시피</li>
-                    <li className="text-center " onClick={toDetailPage}>
-                      <span className="cursor-pointer hover:border-b-2 border-main">
+                    <li
+                      className="text-center "
+                      onClick={() => navigation(`/post/detail/${ele.post_id}`)}
+                    >
+                      <div className="cursor-pointer hover:border-b-2 border-main truncate">
                         {ele.title}
-                      </span>
+                      </div>
                     </li>
                     <li className="text-center">{ele.nickName}</li>
                     <li className="text-center">
