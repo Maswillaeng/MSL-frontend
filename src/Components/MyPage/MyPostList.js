@@ -2,11 +2,16 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { deletePostFetch } from "../../api/postFetch";
 
-const MyPostList = ({ listPostId, listPostTitle, listPostNickName }) => {
+const MyPostList = ({
+  listPostId,
+  listPostTitle,
+  listPostNickName,
+  listPostCreatedAt,
+}) => {
   const manageListRef = useRef(null);
   const navigation = useNavigate();
 
-  const showManageBtn = (e) => {
+  const showManageBtn = () => {
     manageListRef.current.classList.remove("hidden");
     manageListRef.current.classList.add("flex");
   };
@@ -60,7 +65,7 @@ const MyPostList = ({ listPostId, listPostTitle, listPostNickName }) => {
             </div>
           </li>
           <li className="text-center">{listPostNickName}</li>
-          <li className="text-center">{Math.floor(Date.now() / 1000000000)}</li>
+          <li className="text-center">{listPostCreatedAt}</li>
         </ul>
       </li>
     </>

@@ -11,7 +11,7 @@ const Board = () => {
   return (
     <>
       <Header />
-      <div className="mt-20 mx-[200px]">
+      <div className="mt-10 mx-[100px]">
         <header className="flex justify-between mb-7">
           <Category categoryList={categoryList} />
           <div>
@@ -20,7 +20,6 @@ const Board = () => {
             </Link>
           </div>
         </header>
-        <ListOfTableSort />
         <PostList />
       </div>
     </>

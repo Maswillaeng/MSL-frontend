@@ -13,6 +13,7 @@ const postInfoReducer = (state, { type, val }) => {
       copyState.title = val.title;
       copyState.content = val.content;
       copyState.userImage = val.userImage ?? copyState.userImage;
+      copyState.createdAt = val.createdAt;
       return copyState;
     default:
       return null;
@@ -25,12 +26,13 @@ export const PostProvider = (props) => {
     title: "",
     content: "",
     userImage: "",
+    createdAt: "",
   });
 
-  const getPostInfo = (nickName, title, content, userImage) => {
+  const getPostInfo = (nickName, title, content, userImage, createdAt) => {
     dispatchPostInfo({
       type: "UPDATE_POST",
-      val: { nickName, title, content, userImage },
+      val: { nickName, title, content, userImage, createdAt },
     });
   };
 

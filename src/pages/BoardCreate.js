@@ -1,5 +1,5 @@
 import Header from "../Components/Header";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/input.css";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
@@ -10,8 +10,10 @@ import Content from "../Components/CreateBoard/Content";
 import draftToHtml from "draftjs-to-html";
 import { createPostFetch } from "../api/postFetch";
 import Loading from "../Components/Loading";
+import UserContext from "../context/user-context";
 
 const BoardCreate = () => {
+  const { userInfo } = useContext(UserContext);
   const navigation = useNavigate();
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -31,7 +33,7 @@ const BoardCreate = () => {
     await createPostFetch("정채운", title, editorToHtml);
     setIsLoading(false);
     localStorage.clear();
-    navigation("/");
+    navigation(`/users/${userInfo.nickName}`);
   };
 
   //로컬스토리지에 데이터가 있으면 물어보기 없다면 리턴

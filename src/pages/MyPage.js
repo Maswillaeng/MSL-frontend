@@ -9,7 +9,8 @@ import Category from "../Components/UI/Category";
 import MyPostList from "../Components/MyPage/MyPostList";
 import Loading from "../Components/Loading";
 import { getUserInfoFetch, userPostListFetch } from "../api/userFetch";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import Pagenation from "../Components/Board/Pagenation";
 
 const MyPage = () => {
   const { userInfo, getUserInfo } = useContext(UserContext);
@@ -18,12 +19,17 @@ const MyPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [postList, setPostList] = useState([]);
+  const [totalPage, setTotalPage] = useState("");
   const navigation = useNavigate();
+  const { search, pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+
+  const page = searchParams.get("currentPage");
 
   useEffect(() => {
     const userInfoData = async () => {
       setIsLoading(true);
-      const data = await getUserInfoFetch();
+      const { data } = await getUserInfoFetch();
       if (!data) {
         return navigation(-1);
       }
@@ -36,10 +42,11 @@ const MyPage = () => {
   useEffect(() => {
     const userPostListData = async () => {
       setIsLoading(true);
-      const data = await userPostListFetch();
+      const { data, totalElements } = await userPostListFetch(search);
       if (!data) {
         return navigation(-1);
       }
+      setTotalPage(totalElements);
       setPostList(data);
       setIsLoading(false);
     };
@@ -63,15 +70,17 @@ const MyPage = () => {
           <ListOfTableSort />
           <div className="mb-7">
             <ul className="flex flex-col gap-3">
-              {postList?.map(({ post_id, title, nickName }) => (
+              {postList?.map(({ postId, title, nickName, createdAt }) => (
                 <MyPostList
-                  listPostId={post_id}
+                  listPostId={postId}
                   listPostTitle={title}
                   listPostNickName={nickName}
+                  listPostCreatedAt={createdAt}
                 />
               ))}
             </ul>
           </div>
+          <Pagenation path={pathname} postPage={page} totalPage={totalPage} />
         </div>
       )}
       {modal ? (

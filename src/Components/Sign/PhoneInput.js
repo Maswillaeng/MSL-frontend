@@ -8,14 +8,16 @@ const PhoneInput = () => {
 
   const certificateUser = () => {
     const IMP = window.IMP;
-    IMP.init("imp10391932");
+    IMP.init("imp73616437");
 
     IMP.certification(
       {
         m_redirect_url: "{리디렉션 될 URL}",
       },
       (res) => {
+        console.log(res);
         if (res.success) {
+          console.log("hi");
           (async () => {
             const response = await fetch("http://localhost:3000", {
               method: "POST",

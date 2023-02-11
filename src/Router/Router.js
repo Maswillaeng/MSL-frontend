@@ -9,6 +9,10 @@ import MyPage from "../pages/MyPage";
 import Signup from "../pages/Signup";
 import Root from "../Root";
 import NotFound from "../pages/NotFound";
+import AuthTest from "../Components/AuthTest";
+
+const onlyLogin = "ONLY_LOGIN";
+const onlyLogout = "ONLY_LOGOUT";
 
 const router = createBrowserRouter([
   {
@@ -17,30 +21,32 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: AuthTest(Home, null),
       },
       {
         path: "sign",
-        element: <Signup />,
+        element: AuthTest(Signup, onlyLogout),
       },
-      { path: "login", element: <Login /> },
+      { path: "login", element: AuthTest(Login, onlyLogout) },
       {
         path: "post/create",
-        element: <BoardCreate />,
+        element: AuthTest(BoardCreate, onlyLogin),
       },
-      { path: "post/manage/:postId", element: <ModifyBoard /> },
+      {
+        path: "post/manage/:postId",
+        element: AuthTest(ModifyBoard, onlyLogin),
+      },
       {
         path: "post/page",
-        element: <Board />,
+        element: AuthTest(Board, null),
       },
       {
         path: "post/detail/:postId",
-        element: <BoardDetail />,
+        element: AuthTest(BoardDetail, null),
       },
       {
         path: "users/:userId",
-        element: <MyPage />,
-        errorElement: <NotFound />,
+        element: AuthTest(MyPage, onlyLogin),
       },
     ],
     errorElement: <NotFound />,

@@ -29,6 +29,10 @@ const Login = () => {
     setIsLoading(true);
     try {
       const data = await loginFetch(idValue, passwordValue);
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({ ...data, isLoggedIn: true })
+      );
       getUserInfo(data);
       setIsLoggedIn(true);
     } catch (error) {

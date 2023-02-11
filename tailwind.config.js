@@ -6,6 +6,10 @@ module.exports = {
       backgroundImage: {
         wine: "url('./src/assets/wine.jpg')",
       },
+      gridTemplateColumns: {
+        16: "repeat(16, minmax(0, 1fr))",
+        footer: "200px minmax(900px, 1fr) 100px",
+      },
     },
     boxShadow: {
       "3xl": "1px 2px 5px 3px rgba(170,35,60,0.3)",

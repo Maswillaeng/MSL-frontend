@@ -22,11 +22,11 @@ const BoardDetail = () => {
   useEffect(() => {
     const getPostDetailData = async () => {
       setIsLoading(true);
-      const { nickName, title, content, userImage } = await getPostDetailFetch(
-        postId
-      );
+      const {
+        data: { nickName, title, content, userImage, createdAt },
+      } = await getPostDetailFetch(postId);
       setIsLoading(false);
-      getPostInfo(nickName, title, content, userImage); //게시물 주인의 이미지도 갖고 와야함
+      getPostInfo(nickName, title, content, userImage, createdAt);
       contentRef.current.innerHTML = content;
     };
     getPostDetailData();

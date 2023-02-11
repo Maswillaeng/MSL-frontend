@@ -1,5 +1,5 @@
 import "../styles/input.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWineGlass } from "@fortawesome/free-solid-svg-icons";
@@ -7,15 +7,29 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../context/user-context";
 
 const Header = () => {
-  const { isLoggedIn } = useContext(UserContext);
-
+  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const navigation = useNavigate();
   const logoutHandler = async () => {
+    let date = new Date();
+
     const response = await fetch("http://localhost:3000", {
       method: "POST",
     });
+    if (response.ok) {
+      date.setDate(date.getDate() - 3);
+      let setAccessCookie = `ACCESS_TOKEN=main;Expires=${date.toUTCString()}`;
+      document.cookie = setAccessCookie;
+      let setRefreshCookie = `REFRESH_TOKEN=main;Expires=${date.toUTCString()}`;
+      document.cookie = setRefreshCookie;
+      setIsLoggedIn(false);
+      navigation("/");
+    }
   };
   return (
-    <div className="h-16 flex justify-evenly items-center bg-sub sticky top-0">
+    <div
+      id="top"
+      className="h-16 flex justify-evenly items-center bg-sub sticky top-0 z-30"
+    >
       <div className="text-main font-bold text-3xl">
         <Link className="hidden md:block" to={"/"}>
           Maswillaeng

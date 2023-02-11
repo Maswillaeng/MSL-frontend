@@ -39,19 +39,16 @@ export const userSignFetch = async (
 };
 
 export const getUserInfoFetch = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/user`);
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error("notFound");
-    }
-  } catch (error) {}
+  return await fetch(`${BASE_URL}/user`);
 };
 
-export const userPostListFetch = async () => {
+export const userPostListFetch = async (currentPage) => {
+  let page = currentPage;
+  if (!currentPage) {
+    page = "?currentPage=1";
+  }
   try {
-    const response = await fetch(`${BASE_URL}/userPostList`);
+    const response = await fetch(`${BASE_URL}/userPostList${page}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -81,22 +78,22 @@ export const editProfileFetch = async (
 };
 
 export const checkEmailOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}`, {
+  return await fetch(`${BASE_URL}/duplicate-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(value),
+    body: JSON.stringify({ email: value }),
   });
 };
 
 export const checkNickNameOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}`, {
+  return await fetch(`${BASE_URL}/duplicate-nickname`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(value),
+    body: JSON.stringify({ nickName: value }),
   });
 };
 

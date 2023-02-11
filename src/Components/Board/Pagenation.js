@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Pagenation = ({ postPage, totalPage }) => {
+const Pagenation = ({ postPage, totalPage, path }) => {
   const navigation = useNavigate();
   const arrayOfTotalPage = Array.from({ length: totalPage }, (_, k) => k + 1);
 
@@ -8,18 +8,18 @@ const Pagenation = ({ postPage, totalPage }) => {
     const currentPage = postPage;
     const nextPage =
       +currentPage + 10 > +totalPage ? totalPage : +currentPage + 10;
-    navigation(`/post/page?currentPage=${nextPage}`);
+    navigation(`${path}?currentPage=${nextPage}`);
   };
 
   const changePageToPrev = () => {
     const currentPage = postPage;
     const nextPage = +currentPage - 10 < 1 ? 1 : +currentPage - 10;
-    navigation(`/post/page?currentPage=${nextPage}`);
+    navigation(`${path}?currentPage=${nextPage}`);
   };
 
   const changePageOfTargetNum = (e) => {
     const nextPage = e.target.id;
-    navigation(`/post/page?currentPage=${nextPage}`);
+    navigation(`${path}?currentPage=${nextPage}`);
   };
   return (
     <div>
