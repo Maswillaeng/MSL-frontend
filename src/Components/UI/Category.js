@@ -2,16 +2,17 @@ import { useContext } from "react";
 import PostContext from "../../context/post-context";
 
 const Category = () => {
-  const { categoryList } = useContext(PostContext);
-  const getCategoryId = (e) => {
-    console.log(e.target.closest(".category").id);
+  const { categoryList, setCurrentCategory } = useContext(PostContext);
+  const changeCurrentCategory = (e) => {
+    const { id } = e.target.closest(".category");
+    setCurrentCategory(id);
   };
   return (
     <>
       <ul className="flex items-center gap-7">
         {categoryList.map((val) => (
           <li id={val.id} className="category cursor-pointer" key={val.id}>
-            <button onClick={getCategoryId} className="button">
+            <button onClick={changeCurrentCategory} className="button">
               {val.category}
             </button>
           </li>
