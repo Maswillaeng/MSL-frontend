@@ -1,8 +1,9 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useState } from "react";
 
 const PostContext = createContext({
   postInfo: {},
   getPostInfo: () => {},
+  categoryList: [],
 });
 
 const postInfoReducer = (state, { type, val }) => {
@@ -21,6 +22,15 @@ const postInfoReducer = (state, { type, val }) => {
 };
 
 export const PostProvider = (props) => {
+  const [currentCategory, setCurrentCategory] = useState(
+    localStorage.getItem("category") ?? "all"
+  );
+  const categoryList = [
+    { id: "all", category: "전체" },
+    { id: "recipe", category: "레시피" },
+    { id: "recommend", category: "맛집 추천" },
+    { id: "free", category: "자유" },
+  ];
   const [postInfo, dispatchPostInfo] = useReducer(postInfoReducer, {
     nickName: "",
     title: "",
@@ -37,7 +47,9 @@ export const PostProvider = (props) => {
   };
 
   return (
-    <PostContext.Provider value={{ getPostInfo, postInfo }}>
+    <PostContext.Provider
+      value={{ getPostInfo, postInfo, categoryList, setCurrentCategory }}
+    >
       {props.children}
     </PostContext.Provider>
   );

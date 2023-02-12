@@ -1,4 +1,4 @@
-export const compactFormat = (option, number) => {
+export const formatNumber = (option, number) => {
   return new Intl.NumberFormat("en-US", option).format(number);
 };
 

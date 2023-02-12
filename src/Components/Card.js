@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { changeDateFormat, compactFormat } from "../utility/chage-format";
+import { changeDateFormat, formatNumber } from "../utility/chage-format";
 import LazyImage from "./LazyImage";
 
 const Card = ({ ele }) => {
@@ -31,8 +31,12 @@ const Card = ({ ele }) => {
           </span>
           <span>|</span>
           <span>
-            조회수{" "}
-            {ele?.comment ?? compactFormat({ notation: "compact" }, 10000000)}
+            조회수
+            {ele?.view ?? formatNumber({ notation: "compact" }, 10000000)}
+          </span>
+          <span>|</span>
+          <span>
+            댓글{ele.comment ?? formatNumber({ notation: "compact" }, 3)}
           </span>
         </div>
       </div>
@@ -50,7 +54,7 @@ const Card = ({ ele }) => {
         <div className="flex ">
           <span>💕</span>
           <span>
-            {ele?.like ?? compactFormat({ notation: "compact" }, 213516153)}
+            {ele?.like ?? formatNumber({ notation: "compact" }, 213516153)}
           </span>
         </div>
       </div>

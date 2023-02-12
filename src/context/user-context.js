@@ -12,33 +12,30 @@ const userInfoReducer = (state, { type, val }) => {
   let copyState = JSON.parse(JSON.stringify(state));
   switch (type) {
     case "UPDATE_USER_INFO":
-      const { email, nickName, phoneNumber, userImage, introduction } =
-        val.userData;
-      copyState.email = email ?? copyState.email;
-      copyState.nickName = nickName ?? copyState.nickName;
-      copyState.phoneNumber = phoneNumber ?? copyState.phoneNumber;
-      copyState.userImage = userImage ?? copyState.userImage;
-      copyState.introduction = introduction ?? copyState.introduction;
+      copyState.email = val?.email ?? copyState.email;
+      copyState.nickName = val?.nickName ?? copyState.nickName;
+      copyState.phoneNumber = val?.phoneNumber ?? copyState.phoneNumber;
+      copyState.userImage = val?.userImage ?? copyState.userImage;
+      copyState.introduction = val?.introduction ?? copyState.introduction;
       return copyState;
     default:
       return null;
   }
 };
-
+//로그인시 로그인상태와 닉네임 유저이미지를 담을거임
 export const UserProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [userInfo, dispatchUserInfo] = useReducer(userInfoReducer, {
     email: "",
-    nickName: "",
     phoneNumber: "",
     userImage: "",
     introduction: "",
   });
 
-  const updateUserInfo = (nickName, userImage, introduction) => {
+  const updateUserInfo = (userData) => {
     dispatchUserInfo({
       type: "UPDATE_USER_INFO",
-      val: { nickName, userImage, introduction },
+      val: userData,
     });
   };
 
