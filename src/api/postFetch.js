@@ -34,6 +34,7 @@ export const updatePostFetch = async (
   try {
     const response = await fetch(`${BASE_URL}/post/${postId}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -58,6 +59,7 @@ export const deletePostFetch = async (postId) => {
   try {
     const response = await fetch(`${BASE_URL}/post/${postId}`, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("알 수 없는 에러");

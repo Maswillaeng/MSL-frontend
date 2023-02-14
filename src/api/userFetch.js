@@ -29,6 +29,7 @@ export const userSignFetch = async (
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
       email: emailValue,
       nickName: nickNameValue,
@@ -66,6 +67,7 @@ export const editProfileFetch = async (
 ) => {
   return await fetch(`${BASE_URL}/user`, {
     method: "PUT",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -102,6 +104,7 @@ export const deleteUserFetch = async () => {
   try {
     const response = await fetch(`${BASE_URL}/user`, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("알 수 없는 에러");
@@ -114,6 +117,7 @@ export const deleteUserFetch = async () => {
 export const imPortFetch = async (res) => {
   return await fetch(`${BASE_URL}/certifications`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
