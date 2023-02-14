@@ -7,7 +7,7 @@ export const createPostFetch = async (nickName, title, editorToHtml) => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "same-origin",
+      credentials: "include",
       body: JSON.stringify({
         nickName,
         title,
@@ -91,5 +91,25 @@ export const getPostListFetch = async (postPage) => {
   } catch (error) {
     alert(error.message);
     //notFound페이지로
+  }
+};
+
+export const changeImgFormat = async (imageObject) => {
+  try {
+    const response = await fetch(`${BASE_URL}/changeFomatImage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(imageObject),
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("변환 되지 않았습니다.");
+    }
+  } catch (error) {
+    console.error(error.message);
   }
 };

@@ -9,7 +9,7 @@ import Loading from "../Components/Loading";
 import { loginFetch } from "../api/userFetch";
 
 const Login = () => {
-  const { setIsLoggedIn, getUserInfo } = useContext(UserContext);
+  const { setIsLoggedIn } = useContext(UserContext);
   const navigation = useNavigate();
   const idRef = useRef(null);
   const passwordRef = useRef(null);
@@ -33,8 +33,8 @@ const Login = () => {
         "userInfo",
         JSON.stringify({ ...data, isLoggedIn: true })
       );
-      getUserInfo(data);
       setIsLoggedIn(true);
+      navigation("/");
     } catch (error) {
       setError(true);
       setErrorMessage(error.message);

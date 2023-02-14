@@ -1,44 +1,48 @@
 import { Editor } from "react-draft-wysiwyg";
 import { useEffect } from "react";
-import { useState } from "react";
+import { changeImgFormat } from "../../api/postFetch";
 
 const Content = ({ editorState, setEditorState, editorToHtml }) => {
-  const [uploadedImage, setUploadedImages] = useState([]);
-
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
   };
 
-  const uploadImageCallBack = (file) => {
-    let uploadedImages = uploadedImage;
+  const uploadImageCallBack = async (file) => {
     const imageObject = {
       file: file,
       localSrc: URL.createObjectURL(file),
     };
-    uploadedImages.push(imageObject);
-    setUploadedImages(uploadedImages);
+    const data = await changeImgFormat(imageObject);
 
     return new Promise((resolve, reject) => {
-      resolve({ data: { link: imageObject.localSrc } });
+      resolve({
+        data: {
+          link: data.imgSrc,
+        },
+      });
     });
   };
 
   useEffect(() => {
     const saveContent = setTimeout(() => {
       localStorage.setItem("content", editorToHtml);
-    }, 2000);
+    }, 1500);
     return () => {
       clearTimeout(saveContent);
     };
   }, [editorToHtml]);
   return (
-    <div>
+    <div className="hover:cursor-text">
       <Editor
-        toolbarStyle={{ top: 0, zIndex: "1000" }}
+        toolbarStyle={{ top: 0, zIndex: "10" }}
+        wrapperStyle={{
+          minHeight: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
         editorStyle={{
-          overflowY: "scroll",
-          minHeight: "450px",
-          height: "auto",
+          width: "100%",
+          height: "400px",
         }}
         wrapperClassName="wrapper-class"
         editorClassName="editor"
@@ -52,8 +56,7 @@ const Content = ({ editorState, setEditorState, editorToHtml }) => {
             uploadCallback: uploadImageCallBack,
             uploadEnabled: true,
             previewImage: true,
-            defaultSize: { width: 100, height: 100 },
-            alt: { present: true, mandatory: true },
+            defaultSize: { width: "100%", height: "auto" },
           },
         }}
         placeholder="내용을 작성해주세요."

@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 .button {
-  @apply text-main text-sm p-2 md:bg-white md:rounded-[3px] md:text-main md:shadow-3xl md:flex md:justify-center md:items-center md:text-center md:hover:bg-main md:hover:text-white md:text-sm md:break-keep;
+  @apply p-2 bg-white rounded-[3px] text-main shadow-3xl flex justify-center items-center text-center hover:bg-main hover:text-white text-sm break-keep;
 }
 
-.profile_img {
-  @apply rounded-full bg-center  bg-[url('../../public/img/basic_profile.jpg')];
+.circle-button {
+  @apply w-11 h-11 p-2 shadow-3xl flex justify-center items-center text-center text-xl  rounded-full;
 }

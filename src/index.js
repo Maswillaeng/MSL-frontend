@@ -7,18 +7,21 @@ import router from "./Router/Router";
 import { PostProvider } from "./context/post-context";
 import { UserProvider } from "./context/user-context";
 import { SignInputProvider } from "./context/check-signInput-context";
+import { CookiesProvider } from "react-cookie";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <UserProvider>
-      <PostProvider>
-        <SignInputProvider>
-          <RouterProvider router={router} />
-          <Root />
-        </SignInputProvider>
-      </PostProvider>
-    </UserProvider>
+    <CookiesProvider>
+      <UserProvider>
+        <PostProvider>
+          <SignInputProvider>
+            <RouterProvider router={router} />
+            <Root />
+          </SignInputProvider>
+        </PostProvider>
+      </UserProvider>
+    </CookiesProvider>
   </>
 );
 

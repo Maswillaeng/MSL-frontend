@@ -3,23 +3,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { deletePostFetch } from "../../api/postFetch";
+import { changeDateFormat } from "../../utility/chage-format";
 
-const PostHead = ({ nickName, postId, userImage, userInfo }) => {
+const PostHead = ({
+  postUserNickName,
+  postId,
+  postUserImage,
+  userInfo,
+  isLiked,
+  isReported,
+  createdAt,
+}) => {
   const navigation = useNavigate();
   const menuListRef = useRef(null);
-  const copyUrlListRef = useRef(null);
 
   const showMenu = () => {
     menuListRef.current.classList.toggle("hidden");
-  };
-
-  const copyUrl = () => {
-    const { href } = window.location;
-    window.navigator.clipboard.writeText(href).then(
-      () =>
-        copyUrlListRef.current.classList.add("border-b-2", "border-green-600"),
-      () => copyUrlListRef.current.classList.add("border-b-2", "border-red-600")
-    );
   };
 
   const getModifyPage = () => {
@@ -37,25 +36,29 @@ const PostHead = ({ nickName, postId, userImage, userInfo }) => {
   };
 
   return (
-    <div className="flex">
-      <img
-        className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
-        alt="해당 게시물 유저 이미지"
-        src={userImage}
-      />
-      <ul className="basis-[80%]">
-        <li>{nickName}</li>
-        <li>작성일자</li>
-      </ul>
-      <ul className="flex gap-4 basis-[20%] mt-3">
-        <li>댓글</li>
-        <li ref={copyUrlListRef} className="cursor-pointer" onClick={copyUrl}>
-          url복사
-        </li>
+    <div className="flex justify-between border-b-2 border-main pb-5">
+      <div className="flex">
+        <img
+          className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
+          alt="해당 게시물 유저 이미지"
+          src={postUserImage}
+        />
+        <ul>
+          <li>{postUserNickName}</li>
+          <li>
+            {changeDateFormat(createdAt, {
+              year: "2-digit",
+              month: "long",
+              day: "2-digit",
+            })}
+          </li>
+        </ul>
+      </div>
+      <ul className="mt-3">
         <li className="cursor-pointer relative" onClick={showMenu}>
           <FontAwesomeIcon icon={faEllipsisV} />
-          <ul className="hidden absolute w-10" ref={menuListRef}>
-            {userInfo.nickName === nickName ? (
+          <ul className="hidden absolute w-10 z-20" ref={menuListRef}>
+            {userInfo.nickName === postUserNickName ? (
               <>
                 <li onClick={getModifyPage}>수정</li>
                 <li onClick={deletePost}>삭제</li>

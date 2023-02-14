@@ -5,6 +5,7 @@ import Pagenation from "./Pagenation";
 import Loading from "../Loading";
 import styled from "styled-components";
 import Card from "../Card";
+import basicProfile from "../../assets/basic_profile.jpg";
 
 const PostList = () => {
   const { search, pathname } = useLocation();
@@ -14,8 +15,7 @@ const PostList = () => {
   const [post, setPost] = useState([
     {
       nickName: "jchwoon",
-      userImage:
-        "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/436/8142f53e51d2ec31bc0fa4bec241a919_crop.jpeg",
+      userImage: basicProfile,
       postId: 1,
       title: "CORS 문제문제문제문제문제문제문제문제문제문제문제문제문제문제",
       createdAt: "2023-02-08T18:07:17.788471",
@@ -50,7 +50,6 @@ const PostList = () => {
               ))}
             </GridCard>
           </div>
-          <Pagenation postPage={page} totalPage={totalPage} path={pathname} />
         </>
       )}
     </>

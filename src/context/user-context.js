@@ -1,5 +1,4 @@
 import { createContext, useReducer, useState } from "react";
-import { getCookie } from "../utility/cookie";
 
 const UserContext = createContext({
   isLoggedIn: false,
@@ -12,22 +11,21 @@ const userInfoReducer = (state, { type, val }) => {
   let copyState = JSON.parse(JSON.stringify(state));
   switch (type) {
     case "UPDATE_USER_INFO":
-      copyState.email = val?.email ?? copyState.email;
-      copyState.nickName = val?.nickName ?? copyState.nickName;
-      copyState.phoneNumber = val?.phoneNumber ?? copyState.phoneNumber;
-      copyState.userImage = val?.userImage ?? copyState.userImage;
-      copyState.introduction = val?.introduction ?? copyState.introduction;
+      copyState.email = val?.email;
+      copyState.nickName = val?.nickName;
+      copyState.userImage = val?.userImage;
+      copyState.introduction = val?.introduction;
       return copyState;
     default:
       return null;
   }
 };
-//로그인시 로그인상태와 닉네임 유저이미지를 담을거임
+
 export const UserProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, dispatchUserInfo] = useReducer(userInfoReducer, {
     email: "",
-    phoneNumber: "",
+    nickName: "",
     userImage: "",
     introduction: "",
   });

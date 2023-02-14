@@ -6,8 +6,9 @@ export const loginFetch = async (idValue, passwordValue) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
-      id: idValue,
+      email: idValue,
       password: passwordValue,
     }),
   });
@@ -39,7 +40,7 @@ export const userSignFetch = async (
 };
 
 export const getUserInfoFetch = async () => {
-  return await fetch(`${BASE_URL}/user`);
+  return await fetch(`${BASE_URL}/api-user`);
 };
 
 export const userPostListFetch = async (currentPage) => {
@@ -108,4 +109,14 @@ export const deleteUserFetch = async () => {
   } catch (error) {
     alert(error.message);
   }
+};
+
+export const imPortFetch = async (res) => {
+  return await fetch(`${BASE_URL}/certifications`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ imp_uid: res.imp_uid }),
+  });
 };

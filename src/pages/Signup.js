@@ -44,7 +44,7 @@ const Signup = () => {
 
   const submitUserInfo = async (e) => {
     e.preventDefault();
-    const { vlaue: emailValue } = emailRef.current;
+    const { value: emailValue } = emailRef.current;
     const { value: nickNameValue } = nickNameRef.current;
     if (!formIsValid) {
       if (!phoneInfo.isValid) {

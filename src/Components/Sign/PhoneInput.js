@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { imPortFetch } from "../../api/userFetch";
 import SignInputContext from "../../context/check-signInput-context";
 
 const PhoneInput = () => {
@@ -8,24 +9,16 @@ const PhoneInput = () => {
 
   const certificateUser = () => {
     const IMP = window.IMP;
-    IMP.init("imp73616437");
+    IMP.init("imp10391932");
 
     IMP.certification(
       {
         m_redirect_url: "{리디렉션 될 URL}",
       },
       (res) => {
-        console.log(res);
         if (res.success) {
-          console.log("hi");
           (async () => {
-            const response = await fetch("http://localhost:3000", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ imp_uid: res.imp_uid }),
-            });
+            await imPortFetch(res);
           })();
           updatePhoneInfo(true, false);
         } else {
@@ -34,7 +27,6 @@ const PhoneInput = () => {
       }
     );
   };
-
   return (
     <>
       <button

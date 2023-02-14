@@ -1,37 +1,69 @@
-const PostComment = ({ nickName }) => {
+import basicProfile from "../../assets/basic_profile.jpg";
+import { changeDateFormat } from "../../utility/chage-format";
+
+const PostComment = ({ commentObj }) => {
+  const { commentNumber, commentList } = commentObj;
   const submitComment = (e) => {
     e.preventDefault();
   };
 
   return (
     <div className="w-full mt-10">
-      <ul className="border-2 border-main basis-[100%] px-14 py-10 rounded-[10px] w-full max-h-[400px] h-auto">
-        <li className="flex">
-          <div className="max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] mr-2 profile_img"></div>
-          <div className="flex flex-col">
-            <ul className="flex gap-3">
-              <li className="text-[5px]">{nickName}</li>
-              <li className="text-[5px]">작성일자</li>
-            </ul>
-            <div>댓글</div>
-          </div>
-        </li>
-      </ul>
+      <div>
+        <span className="mr-5">댓글 {commentNumber}개</span>
+        <label htmlFor="sortComment">
+          <select id="sortComment" name="정렬기준">
+            <option>인기 댓글순</option>
+            <option>최신순</option>
+          </select>
+        </label>
+      </div>
       <form
         className="flex flex-col justify-between mt-10"
         onSubmit={submitComment}
       >
-        <textarea
-          id="comment"
-          className="border-2 border-main basis-[100%] p-5 rounded-[10px] w-full h-auto outline-none resize-none scroll-m-80 overflow-y-scroll"
-          placeholder="댓글 입력"
-        ></textarea>
+        <div className="flex">
+          <img
+            className="max-w-[40px] max-h-[40px] min-w-[40px] min-h-[40px] mr-2 rounded-full"
+            alt="사용자 프로필 이미지"
+            src={basicProfile}
+          />
+          <textarea
+            id="comment"
+            className="border-b-2 border-main outline-none resize-none w-full h-auto"
+            placeholder="댓글 입력"
+          ></textarea>
+        </div>
         <div className="self-end m-5">
           <button type="submit" className="button">
             등록
           </button>
         </div>
       </form>
+      <ul className="w-full">
+        {commentList.map((ele) => (
+          <li key={ele.id} className="flex mb-5">
+            <img
+              className="max-w-[40px] max-h-[40px] min-w-[40px] min-h-[40px] mr-2 rounded-full"
+              alt="해당 댓글 유저이미지"
+              src={basicProfile}
+            />
+            <div className="flex flex-col">
+              <ul className="flex gap-3">
+                <li className="text-[5px]">{ele.nickName}</li>
+                <li className="text-[5px]">
+                  {changeDateFormat(ele.createdAt, {
+                    year: "2-digit",
+                    month: "long",
+                    day: "2-digit",
+                  })}
+                </li>
+              </ul>
+              <div>{ele.content}</div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

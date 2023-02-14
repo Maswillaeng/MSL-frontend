@@ -36,7 +36,6 @@ const BoardCreate = () => {
     navigation(`/users/${userInfo.nickName}`);
   };
 
-  //로컬스토리지에 데이터가 있으면 물어보기 없다면 리턴
   useEffect(() => {
     const title = localStorage.getItem("title") ?? "";
     const content = localStorage.getItem("content") ?? "<p></p> ";
@@ -59,31 +58,29 @@ const BoardCreate = () => {
       }
     }
   }, []);
+
   return (
     <>
-      <div>
-        <Header />
-        <div className="min-w-[900px]">
-          <form
-            className="mt-20 mx-[200px] overflow-hidden"
-            onSubmit={submitPostData}
-          >
+      <Header />
+      <div className={`pt-5 min-w-[1000px]  mx-20 flex justify-center`}>
+        <form className="flex flex-col w-7/12" onSubmit={submitPostData}>
+          <div>
             <Title title={title} setTitle={setTitle} />
             <Content
               editorState={editorState}
               setEditorState={setEditorState}
               editorToHtml={editorToHtml}
             />
-            <footer className="absolute left-0 bottom-0 bg-sub w-screen h-16">
-              <button
-                type="submit"
-                className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"
-              >
-                완료
-              </button>
-            </footer>
-          </form>
-        </div>
+          </div>
+          <footer className="fixed left-0 bottom-0 w-screen bg-sub h-16 ">
+            <button
+              type="submit"
+              className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"
+            >
+              완료
+            </button>
+          </footer>
+        </form>
       </div>
       {isLoading ? <Loading /> : null}
     </>

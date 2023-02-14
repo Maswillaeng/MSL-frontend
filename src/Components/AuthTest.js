@@ -13,13 +13,15 @@ const AuthTest = (Component, option) => {
         try {
           const response = await getUserInfoFetch();
           if (response.ok) {
-            const { data } = await response.json();
-            if (data.isLoggedIn === false) {
+            const data = await response.json();
+            console.log(data);
+            if (data.loggedIn === false) {
+              //이거 오는 데이터가 어떻게 되는지
               if (option === "ONLY_LOGIN") {
                 navigation("/sign");
               }
               setIsLoggedIn(false);
-            } else if (data.isLoggedIn === true) {
+            } else if (data.loggedIn === true) {
               updateUserInfo(data);
               setIsLoggedIn(true);
               if (option === "ONLY_LOGOUT") {

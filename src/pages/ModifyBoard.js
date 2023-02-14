@@ -9,8 +9,6 @@ import ModifyContent from "../Components/ModifyBoard/ModifyContent";
 import ModifyTitle from "../Components/ModifyBoard/ModifyTitle";
 import PostContext from "../context/post-context";
 
-//컴포넌트 최적화 onChange => ref
-
 const ModifyBoard = () => {
   const postCtx = useContext(PostContext);
   const { title, content, userImage } = postCtx.postInfo;
