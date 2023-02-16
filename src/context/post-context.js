@@ -21,13 +21,12 @@ const postInfoReducer = (state, { type, val }) => {
 
 export const PostProvider = (props) => {
   const [currentCategory, setCurrentCategory] = useState(
-    localStorage.getItem("category") ?? "all"
+    localStorage.getItem("category") ?? "FREE"
   );
   const categoryList = [
-    { id: "all", category: "전체" },
-    { id: "recipe", category: "레시피" },
-    { id: "recommend", category: "맛집 추천" },
-    { id: "free", category: "자유" },
+    { id: "RECIPE", category: "레시피" },
+    { id: "RECOMMEND", category: "맛집 추천" },
+    { id: "FREE", category: "자유" },
   ];
   const [postInfo, dispatchPostInfo] = useReducer(postInfoReducer, {});
 

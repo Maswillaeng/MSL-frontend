@@ -25,6 +25,7 @@ const Header = () => {
       navigation("/");
     }
   };
+  console.log(currentCategory);
   return (
     <div
       id="top"

@@ -11,6 +11,8 @@ const PostList = () => {
   const [isLodding, setIsLoading] = useState(false);
   const currentCategory = searchParams.get("category");
 
+  console.log(currentCategory);
+
   useEffect(() => {
     const getPostListData = async () => {
       setIsLoading(true);

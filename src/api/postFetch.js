@@ -90,7 +90,9 @@ export const getPostDetailFetch = async (postId) => {
 
 export const getPostListFetch = async (category) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post?category=${category}`);
+    const response = await fetch(`${BASE_URL}/api-post?category=${category}`, {
+      credentials: "include",
+    });
     if (response.ok) {
       return await response.json();
     } else {
