@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:8080";
 
 export const loginFetch = async (idValue, passwordValue) => {
-  const response = await fetch(`${BASE_URL}/login`, {
+  const response = await fetch(`${BASE_URL}/api-login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const userSignFetch = async (
   nickNameValue,
   passwordValue
 ) => {
-  return await fetch(`${BASE_URL}/sign`, {
+  return await fetch(`${BASE_URL}/api-sign`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const userPostListFetch = async (currentPage) => {
     page = "?currentPage=1";
   }
   try {
-    const response = await fetch(`${BASE_URL}/userPostList${page}`);
+    const response = await fetch(`${BASE_URL}/api-userPostList${page}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -67,7 +67,7 @@ export const editProfileFetch = async (
   editNickName,
   editIntroduction
 ) => {
-  return await fetch(`${BASE_URL}/user`, {
+  return await fetch(`${BASE_URL}/api-user`, {
     method: "PUT",
     credentials: "include",
     headers: {
@@ -83,7 +83,7 @@ export const editProfileFetch = async (
 };
 
 export const checkEmailOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}/duplicate-email`, {
+  return await fetch(`${BASE_URL}/api-duplicate-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const checkEmailOverlapFetch = async (value) => {
 };
 
 export const checkNickNameOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}/duplicate-nickname`, {
+  return await fetch(`${BASE_URL}/api-duplicate-nickname`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export const checkNickNameOverlapFetch = async (value) => {
 
 export const deleteUserFetch = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/user`, {
+    const response = await fetch(`${BASE_URL}/api-user`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -117,7 +117,7 @@ export const deleteUserFetch = async () => {
 };
 
 export const imPortFetch = async (res) => {
-  return await fetch(`${BASE_URL}/certifications`, {
+  return await fetch(`${BASE_URL}/api-certifications`, {
     method: "POST",
     credentials: "include",
     headers: {

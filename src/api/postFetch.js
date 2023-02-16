@@ -7,7 +7,7 @@ export const createPostFetch = async (
   category
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/post`, {
+    const response = await fetch(`${BASE_URL}/api-post`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export const updatePostFetch = async (
   userImage
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/post/${postId}`, {
+    const response = await fetch(`${BASE_URL}/api-post/${postId}`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -63,7 +63,7 @@ export const updatePostFetch = async (
 
 export const deletePostFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/post/${postId}`, {
+    const response = await fetch(`${BASE_URL}/api-post/${postId}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -77,7 +77,7 @@ export const deletePostFetch = async (postId) => {
 
 export const getPostDetailFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/post/${postId}`);
+    const response = await fetch(`${BASE_URL}/api-post/${postId}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -90,7 +90,7 @@ export const getPostDetailFetch = async (postId) => {
 
 export const getPostListFetch = async (category) => {
   try {
-    const response = await fetch(`${BASE_URL}/post?category=${category}`);
+    const response = await fetch(`${BASE_URL}/api-post?category=${category}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -104,7 +104,7 @@ export const getPostListFetch = async (category) => {
 
 export const changeImgFormat = async (imageObject) => {
   try {
-    const response = await fetch(`${BASE_URL}/changeFomatImage`, {
+    const response = await fetch(`${BASE_URL}/api-changeFomatImage`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export const changeImgFormat = async (imageObject) => {
 };
 
 export const updateLikeNumberFetch = async (sendLikeValue) => {
-  return await fetch(`${BASE_URL}`, {
+  return await fetch(`${BASE_URL}/api`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export const updateLikeNumberFetch = async (sendLikeValue) => {
 };
 
 export const updateCommentLikeNumberFetch = async (sendLikeValue) => {
-  return await fetch(`${BASE_URL}`, {
+  return await fetch(`${BASE_URL}/api`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -145,7 +145,7 @@ export const updateCommentLikeNumberFetch = async (sendLikeValue) => {
 };
 
 export const createCommentFetch = async (value) => {
-  return await fetch(`${BASE_URL}`, {
+  return await fetch(`${BASE_URL}/api`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
