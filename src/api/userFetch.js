@@ -1,3 +1,5 @@
+import basicProfile from "../assets/basic_profile.jpg";
+
 const BASE_URL = "http://localhost:8080";
 
 export const loginFetch = async (idValue, passwordValue) => {
@@ -34,8 +36,7 @@ export const userSignFetch = async (
       email: emailValue,
       nickName: nickNameValue,
       password: passwordValue,
-      userImage:
-        "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/436/8142f53e51d2ec31bc0fa4bec241a919_crop.jpeg",
+      userImage: basicProfile,
     }),
   });
 };
