@@ -1,5 +1,5 @@
 import Header from "../Components/Header";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "../styles/input.css";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
@@ -11,14 +11,22 @@ import draftToHtml from "draftjs-to-html";
 import { createPostFetch } from "../api/postFetch";
 import Loading from "../Components/Loading";
 import UserContext from "../context/user-context";
+import DropDown from "../Components/UI/DropDown";
+import useFindOpenBarAndClose from "../hooks/useFindOpenBarAndClose";
+import PostContext from "../context/post-context";
+
+const openButtonText = "카테고리 설정";
 
 const BoardCreate = () => {
   const { userInfo } = useContext(UserContext);
+  const { categoryList } = useContext(PostContext);
   const navigation = useNavigate();
   const [title, setTitle] = useState("");
+  const [categoryId, setCategoryId] = useState("all");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isLoading, setIsLoading] = useState(false);
-
+  const dropDownRef = useRef(null);
+  const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
   const editorToHtml = draftToHtml(
     convertToRaw(editorState.getCurrentContent())
   );
@@ -30,10 +38,14 @@ const BoardCreate = () => {
       return;
     }
     setIsLoading(true);
-    await createPostFetch("정채운", title, editorToHtml);
+    await createPostFetch(userInfo.nickName, title, editorToHtml, categoryId);
     setIsLoading(false);
     localStorage.clear();
     navigation(`/users/${userInfo.nickName}`);
+  };
+
+  const changeCategory = (e) => {
+    setCategoryId(e.target.id);
   };
 
   useEffect(() => {
@@ -72,7 +84,32 @@ const BoardCreate = () => {
               editorToHtml={editorToHtml}
             />
           </div>
-          <footer className="fixed left-0 bottom-0 w-screen bg-sub h-16 ">
+          <footer className="flex fixed left-0 bottom-0 w-screen bg-sub h-16 ">
+            <label className="relative">
+              <DropDown
+                openButtonText={openButtonText}
+                dropDownRef={dropDownRef}
+                setIsOpen={setIsOpen}
+              />
+              {isOpen ? (
+                <ul className="absolute z-20 bg-sub rounded-[5px] -top-36 left-3 text-center break-keep">
+                  {categoryList.map((ele) => (
+                    <li
+                      id={ele.id}
+                      onClick={changeCategory}
+                      className={`${
+                        categoryId === ele.id
+                          ? "bg-red-200"
+                          : "hover:bg-red-200"
+                      } pointer`}
+                      key={ele.id}
+                    >
+                      {ele.category}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </label>
             <button
               type="submit"
               className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"

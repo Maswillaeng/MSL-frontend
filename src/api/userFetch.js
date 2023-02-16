@@ -41,7 +41,9 @@ export const userSignFetch = async (
 };
 
 export const getUserInfoFetch = async () => {
-  return await fetch(`${BASE_URL}/api-user`);
+  return await fetch(`${BASE_URL}/api-user`, {
+    credentials: "include",
+  });
 };
 
 export const userPostListFetch = async (currentPage) => {

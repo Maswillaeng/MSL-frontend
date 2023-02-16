@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getPostListFetch } from "../../api/postFetch";
-import Pagenation from "./Pagenation";
 import Loading from "../Loading";
 import styled from "styled-components";
 import Card from "../Card";
 import basicProfile from "../../assets/basic_profile.jpg";
 
 const PostList = () => {
-  const { search, pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const navigation = useNavigate();
-  const [category, setCategory] = useState();
   const [post, setPost] = useState([
     {
       nickName: "jchwoon",
@@ -22,21 +19,18 @@ const PostList = () => {
       thumbNail: "",
     },
   ]);
-  const [totalPage, setTotalPage] = useState(10);
   const [isLodding, setIsLoading] = useState(false);
-  const page = searchParams.get("currentPage");
+  const currentCategory = searchParams.get("category");
 
   // useEffect(() => {
   //   const getPostListData = async () => {
   //     setIsLoading(true);
-  //     const { data } = await getPostListFetch(search);
-  //     console.log(data);
-  //     setTotalPage(Math.ceil(data.totalElements / 20));
+  //     const { data } = await getPostListFetch(currentCategory);
   //     setPost(data.content);
   //     setIsLoading(false);
   //   };
   //   getPostListData();
-  // }, [search]);
+  // }, [currentCategory]);
   return (
     <>
       {isLodding ? (

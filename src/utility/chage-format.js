@@ -7,3 +7,8 @@ export const changeDateFormat = (time, option) => {
   const changeDate = new Intl.DateTimeFormat("ko-KR", option).format(date);
   return changeDate;
 };
+
+export const changeDateToSeconds = (date) => {
+  const MilliSeconds = Date.parse(date);
+  return MilliSeconds;
+};

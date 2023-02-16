@@ -1,25 +1,28 @@
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { deletePostFetch } from "../../api/postFetch";
+import UserContext from "../../context/user-context";
+import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
 import { changeDateFormat } from "../../utility/chage-format";
+import DropDown from "../UI/DropDown";
+
+const menuButtonText = ` <svg fill="#AA233C" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
+    <path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z" />
+  </svg>`;
 
 const PostHead = ({
   postUserNickName,
   postId,
   postUserImage,
   userInfo,
-  isLiked,
   isReported,
   createdAt,
 }) => {
   const navigation = useNavigate();
-  const menuListRef = useRef(null);
-
-  const showMenu = () => {
-    menuListRef.current.classList.toggle("hidden");
-  };
+  const { isLoggedIn } = useContext(UserContext);
+  const dropDownRef = useRef(null);
+  const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
 
   const getModifyPage = () => {
     navigation(`/post/manage/${postId}`);
@@ -34,7 +37,6 @@ const PostHead = ({
       navigation(`/post/detail/${postId}`);
     }
   };
-
   return (
     <div className="flex justify-between border-b-2 border-main pb-5">
       <div className="flex">
@@ -54,20 +56,32 @@ const PostHead = ({
           </li>
         </ul>
       </div>
-      <ul className="mt-3">
-        <li className="cursor-pointer relative" onClick={showMenu}>
-          <FontAwesomeIcon icon={faEllipsisV} />
-          <ul className="hidden absolute w-10 z-20" ref={menuListRef}>
-            {userInfo.nickName === postUserNickName ? (
-              <>
-                <li onClick={getModifyPage}>수정</li>
-                <li onClick={deletePost}>삭제</li>
-              </>
+      {isLoggedIn ? (
+        <div className="mt-3">
+          <label className="relative" htmlFor="sortComment">
+            <DropDown
+              openButtonText={menuButtonText}
+              dropDownRef={dropDownRef}
+              setIsOpen={setIsOpen}
+            />
+            {isOpen ? (
+              <ul className="absolute z-20 bg-sub rounded-[5px] top-8 -left-1 text-center break-keep">
+                {userInfo.nickName === postUserNickName ? (
+                  <>
+                    <li className="pointer" onClick={deletePost}>
+                      수정
+                    </li>
+                    <li className="pointer" onClick={getModifyPage}>
+                      삭제
+                    </li>
+                  </>
+                ) : null}
+                <li className="pointer">신고</li>
+              </ul>
             ) : null}
-            <li>신고</li>
-          </ul>
-        </li>
-      </ul>
+          </label>
+        </div>
+      ) : null}
     </div>
   );
 };

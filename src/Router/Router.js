@@ -10,6 +10,7 @@ import Signup from "../pages/Signup";
 import Root from "../Root";
 import NotFound from "../pages/NotFound";
 import AuthTest from "../Components/AuthTest";
+import UpdateToken from "../pages/UpdateToken";
 
 const onlyLogin = "ONLY_LOGIN";
 const onlyLogout = "ONLY_LOGOUT";
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
         element: AuthTest(ModifyBoard, onlyLogin),
       },
       {
-        path: "post/page",
+        path: "post",
         element: AuthTest(Board, null),
       },
       {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "users/:userId",
         element: AuthTest(MyPage, onlyLogin),
+      },
+      {
+        path: "updateToken",
+        element: <UpdateToken />,
       },
     ],
     errorElement: <NotFound />,

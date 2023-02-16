@@ -5,9 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWineGlass } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../context/user-context";
+import PostContext from "../context/post-context";
 
 const Header = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const { currentCategory } = useContext(PostContext);
   const navigation = useNavigate();
 
   const logoutHandler = async () => {
@@ -53,7 +55,7 @@ const Header = () => {
       {isLoggedIn ? (
         <>
           <div className=" md:flex md:flex-row md:justify-evenly md:gap-10 ">
-            <Link to={"/post/page?currentPage=1"}>
+            <Link to={`/post?category=${currentCategory}`}>
               <button className="button">게시판</button>
             </Link>
             <Link to={"/users/1"}>
@@ -66,7 +68,7 @@ const Header = () => {
         </>
       ) : (
         <div className="flex justify-evenly gap-10">
-          <Link to={"/post/page?currentPage=1"}>
+          <Link to={`/post?category=${currentCategory}`}>
             <button className="button">게시판</button>
           </Link>
           <Link to={"/login"}>

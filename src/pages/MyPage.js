@@ -1,5 +1,4 @@
 import Header from "../Components/Header";
-import ListOfTableSort from "../Components/Board/ListOfTableSort";
 import { useContext, useEffect } from "react";
 import { useState } from "react";
 import EditProfileModal from "../Components/MyPage/EditProfileModal";
@@ -10,7 +9,6 @@ import MyPostList from "../Components/MyPage/MyPostList";
 import Loading from "../Components/Loading";
 import { getUserInfoFetch, userPostListFetch } from "../api/userFetch";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import Pagenation from "../Components/Board/Pagenation";
 
 const MyPage = () => {
   const { userInfo, getUserInfo } = useContext(UserContext);
@@ -67,7 +65,6 @@ const MyPage = () => {
             setModal={setModal}
           />
           <Category categoryList={category} />
-          <ListOfTableSort />
           <div className="mb-7">
             <ul className="flex flex-col gap-3">
               {postList?.map(({ postId, title, nickName, createdAt }) => (
@@ -80,7 +77,6 @@ const MyPage = () => {
               ))}
             </ul>
           </div>
-          <Pagenation path={pathname} postPage={page} totalPage={totalPage} />
         </div>
       )}
       {modal ? (

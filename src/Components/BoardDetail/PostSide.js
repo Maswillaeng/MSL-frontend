@@ -1,19 +1,27 @@
 import { faHeart, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
 import { useRef } from "react";
-import { useState } from "react";
+import { updateLikeNumberFetch } from "../../api/postFetch";
+import UserContext from "../../context/user-context";
+import useToggleLike from "../../hooks/useToggleLike";
 
 const PostSide = ({ likeNumber, isLiked }) => {
-  const [isLike, setIsLike] = useState(isLiked);
+  const { isLoggedIn } = useContext(UserContext);
+  const { isLike, likeCount, toggleLike } = useToggleLike(
+    isLoggedIn,
+    likeNumber,
+    isLiked,
+    updateLikeNumberFetch
+  );
   const copyUrlListRef = useRef(null);
 
-  const toggleLikeHandler = () => {
-    setIsLike((prev) => !prev);
+  const toggleLikeHandler = async () => {
+    toggleLike();
   };
 
   const copyUrl = () => {
     const { href } = window.location;
-    console.log(href);
     window.navigator.clipboard.writeText(href).then(
       () => {
         copyUrlListRef.current.classList.add("bg-green-600");
@@ -29,19 +37,20 @@ const PostSide = ({ likeNumber, isLiked }) => {
       }
     );
   };
-
   return (
-    <ul className="fixed left-32 top-44 flex flex-col gap-3 items-center border-main border-2 p-5 rounded-full">
+    <ul className="fixed right-20 top-44 flex flex-col gap-3 items-center border-main border-2 p-5 rounded-full z-20 bg-gradient-to-br from-red-100 via-red-200 to-red-400">
       <li className="flex flex-col items-center">
         <button
           onClick={toggleLikeHandler}
           className={`circle-button  ${
-            isLike ? "bg-white text-main" : "bg-main text-white"
-          }`}
+            isLike ? "bg-main text-white" : "bg-white text-main"
+          } ${
+            isLoggedIn && "active:scale-125 active:duration-200"
+          } duration-300 scale-100`}
         >
           <FontAwesomeIcon icon={faHeart} />
         </button>
-        <span>{likeNumber}</span>
+        <span>{likeCount}</span>
       </li>
       <li>
         <button

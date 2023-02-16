@@ -3,9 +3,16 @@
 @tailwind utilities;
 
 .button {
-  @apply p-2 bg-white rounded-[3px] text-main shadow-3xl flex justify-center items-center text-center hover:bg-main hover:text-white text-sm break-keep;
+  @apply p-2 rounded-[3px] text-main bg-white shadow-3xl flex justify-center items-center text-center hover:bg-main hover:text-white text-sm break-keep;
+}
+.target-button {
+  @apply p-2 rounded-[3px] text-white bg-main  shadow-3xl flex justify-center items-center text-center text-sm break-keep;
 }
 
 .circle-button {
   @apply w-11 h-11 p-2 shadow-3xl flex justify-center items-center text-center text-xl  rounded-full;
+}
+
+.pointer {
+  @apply my-2 cursor-pointer hover:bg-red-200;
 }

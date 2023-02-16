@@ -4,17 +4,15 @@ const PostContext = createContext({
   postInfo: {},
   getPostInfo: () => {},
   categoryList: [],
+  currentCategory: "",
+  setCurrentCategory: () => {},
 });
 
 const postInfoReducer = (state, { type, val }) => {
-  const copyState = JSON.parse(JSON.stringify(state));
+  let copyState = JSON.parse(JSON.stringify(state));
   switch (type) {
     case "UPDATE_POST":
-      copyState.nickName = val.nickName;
-      copyState.title = val.title;
-      copyState.content = val.content;
-      copyState.userImage = val.userImage ?? copyState.userImage;
-      copyState.createdAt = val.createdAt;
+      copyState = val;
       return copyState;
     default:
       return null;
@@ -31,24 +29,24 @@ export const PostProvider = (props) => {
     { id: "recommend", category: "맛집 추천" },
     { id: "free", category: "자유" },
   ];
-  const [postInfo, dispatchPostInfo] = useReducer(postInfoReducer, {
-    nickName: "",
-    title: "",
-    content: "",
-    userImage: "",
-    createdAt: "",
-  });
+  const [postInfo, dispatchPostInfo] = useReducer(postInfoReducer, {});
 
-  const getPostInfo = (nickName, title, content, userImage, createdAt) => {
+  const getPostInfo = (postObj) => {
     dispatchPostInfo({
       type: "UPDATE_POST",
-      val: { nickName, title, content, userImage, createdAt },
+      val: postObj,
     });
   };
 
   return (
     <PostContext.Provider
-      value={{ getPostInfo, postInfo, categoryList, setCurrentCategory }}
+      value={{
+        getPostInfo,
+        postInfo,
+        categoryList,
+        setCurrentCategory,
+        currentCategory,
+      }}
     >
       {props.children}
     </PostContext.Provider>

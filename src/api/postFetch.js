@@ -1,6 +1,11 @@
 const BASE_URL = "http://localhost:8080";
 
-export const createPostFetch = async (nickName, title, editorToHtml) => {
+export const createPostFetch = async (
+  nickName,
+  title,
+  editorToHtml,
+  category
+) => {
   try {
     const response = await fetch(`${BASE_URL}/post`, {
       method: "POST",
@@ -12,6 +17,7 @@ export const createPostFetch = async (nickName, title, editorToHtml) => {
         nickName,
         title,
         content: editorToHtml,
+        category,
       }),
     });
     if (response.ok) {
@@ -82,9 +88,9 @@ export const getPostDetailFetch = async (postId) => {
   }
 };
 
-export const getPostListFetch = async (postPage) => {
+export const getPostListFetch = async (category) => {
   try {
-    const response = await fetch(`${BASE_URL}/post/page${postPage}`);
+    const response = await fetch(`${BASE_URL}/post?category=${category}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -114,4 +120,37 @@ export const changeImgFormat = async (imageObject) => {
   } catch (error) {
     console.error(error.message);
   }
+};
+
+export const updateLikeNumberFetch = async (sendLikeValue) => {
+  return await fetch(`${BASE_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(sendLikeValue),
+  });
+};
+
+export const updateCommentLikeNumberFetch = async (sendLikeValue) => {
+  return await fetch(`${BASE_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(sendLikeValue),
+  });
+};
+
+export const createCommentFetch = async (value) => {
+  return await fetch(`${BASE_URL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(value),
+  });
 };
