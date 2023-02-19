@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { changeDateFormat, formatNumber } from "../utility/chage-format";
 import LazyImage from "./LazyImage";
 
 const Card = ({ ele }) => {
+  const { pathname } = useLocation();
   return (
     <div className="flex flex-col rounded-[10px] bg-main relative h-[280px] duration-500 text-sub hover:-translate-y-4 hover:duration-500 hover:ease-in-out">
       <div className="w-full h-[150px]">
@@ -32,30 +33,30 @@ const Card = ({ ele }) => {
           <span>|</span>
           <span>
             조회수
-            {ele?.view ?? formatNumber({ notation: "compact" }, 10000000)}
+            {formatNumber({ notation: "compact" }, ele?.hits)}
           </span>
           <span>|</span>
           <span>
-            댓글{ele.comment ?? formatNumber({ notation: "compact" }, 3)}
+            댓글{formatNumber({ notation: "compact" }, ele.commentCnt)}
           </span>
         </div>
       </div>
       <div className="flex justify-between p-3 border-t-[1px] border-sub">
-        <div>
-          <Link className="flex">
-            <LazyImage
-              alt={"유저 이미지"}
-              className="object-cover object-center w-[30px] h-[30px] rounded-full mr-3"
-              src={ele.userImage}
-            />
-            <span className="text-sm mt-2">{ele.nickName}</span>
-          </Link>
-        </div>
+        {pathname.includes("users") ? null : (
+          <div>
+            <Link to={""} className="flex">
+              <LazyImage
+                alt={"유저 이미지"}
+                className="object-cover object-center w-[30px] h-[30px] rounded-full mr-3"
+                src={ele.userImage}
+              />
+              <span className="text-sm mt-2">{ele.nickName}</span>
+            </Link>
+          </div>
+        )}
         <div className="flex ">
           <span>💕</span>
-          <span>
-            {ele?.like ?? formatNumber({ notation: "compact" }, 213516153)}
-          </span>
+          <span>{formatNumber({ notation: "compact" }, ele?.likeCnt)}</span>
         </div>
       </div>
     </div>

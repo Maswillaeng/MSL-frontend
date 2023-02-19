@@ -3,7 +3,7 @@ import basicProfile from "../assets/basic_profile.jpg";
 const BASE_URL = "http://localhost:8080";
 
 export const loginFetch = async (idValue, passwordValue) => {
-  const response = await fetch(`${BASE_URL}/api-login`, {
+  const response = await fetch(`${BASE_URL}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,12 +21,22 @@ export const loginFetch = async (idValue, passwordValue) => {
   }
 };
 
+export const logoutFetch = async () => {
+  return await fetch(`${BASE_URL}/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+};
+
 export const userSignFetch = async (
   emailValue,
   nickNameValue,
   passwordValue
 ) => {
-  return await fetch(`${BASE_URL}/api-sign`, {
+  return await fetch(`${BASE_URL}/api/sign`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,18 +52,26 @@ export const userSignFetch = async (
 };
 
 export const getUserInfoFetch = async () => {
-  return await fetch(`${BASE_URL}/api-user`, {
+  return await fetch(`${BASE_URL}/api/user`, {
     credentials: "include",
   });
 };
 
-export const userPostListFetch = async (currentPage) => {
-  let page = currentPage;
-  if (!currentPage) {
-    page = "?currentPage=1";
-  }
+export const getSomeoneUserInfoFetch = async (userId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-userPostList${page}`);
+    return await fetch(`${BASE_URL}/api/userInfo?userId=${userId}`, {
+      credentials: "include",
+    });
+  } catch (error) {}
+};
+
+export const userPostListFetch = async (category, userId) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/api/userPostList?userId=${userId}${
+        category && `&?category=${category}`
+      }`
+    );
     if (response.ok) {
       return await response.json();
     } else {
@@ -63,19 +81,17 @@ export const userPostListFetch = async (currentPage) => {
 };
 
 export const editProfileFetch = async (
-  userInfo,
   editUserImage,
   editNickName,
   editIntroduction
 ) => {
-  return await fetch(`${BASE_URL}/api-user`, {
+  return await fetch(`${BASE_URL}/api/user`, {
     method: "PUT",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      ...userInfo,
       userImage: editUserImage,
       nickName: editNickName,
       introduction: editIntroduction,
@@ -84,7 +100,7 @@ export const editProfileFetch = async (
 };
 
 export const checkEmailOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}/api-duplicate-email`, {
+  return await fetch(`${BASE_URL}/api/duplicate-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -94,7 +110,7 @@ export const checkEmailOverlapFetch = async (value) => {
 };
 
 export const checkNickNameOverlapFetch = async (value) => {
-  return await fetch(`${BASE_URL}/api-duplicate-nickname`, {
+  return await fetch(`${BASE_URL}/api/duplicate-nickname`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -105,7 +121,7 @@ export const checkNickNameOverlapFetch = async (value) => {
 
 export const deleteUserFetch = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api-user`, {
+    const response = await fetch(`${BASE_URL}/api/user`, {
       method: "DELETE",
       credentials: "include",
     });

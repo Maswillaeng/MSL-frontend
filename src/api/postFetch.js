@@ -7,7 +7,7 @@ export const createPostFetch = async (
   category
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post`, {
+    const response = await fetch(`${BASE_URL}/api/post`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export const updatePostFetch = async (
   userImage
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post/${postId}`, {
+    const response = await fetch(`${BASE_URL}/api/post/${postId}`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -63,7 +63,7 @@ export const updatePostFetch = async (
 
 export const deletePostFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post/${postId}`, {
+    const response = await fetch(`${BASE_URL}/api/post/${postId}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -77,7 +77,7 @@ export const deletePostFetch = async (postId) => {
 
 export const getPostDetailFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post/${postId}`);
+    const response = await fetch(`${BASE_URL}/api/post/${postId}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -90,23 +90,25 @@ export const getPostDetailFetch = async (postId) => {
 
 export const getPostListFetch = async (category) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-post?category=${category}`, {
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${BASE_URL}/api/post${category ? `?category=${category}` : ""}`,
+      {
+        credentials: "include",
+      }
+    );
     if (response.ok) {
       return await response.json();
     } else {
       throw new Error("notFound");
     }
   } catch (error) {
-    alert(error.message);
-    //notFound페이지로
+    console.error(error.message);
   }
 };
 
 export const changeImgFormat = async (imageObject) => {
   try {
-    const response = await fetch(`${BASE_URL}/api-changeFomatImage`, {
+    const response = await fetch(`${BASE_URL}/api/changeFomatImage`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

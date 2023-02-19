@@ -4,7 +4,7 @@ const DropDown = ({ openButtonText, dropDownRef, setIsOpen }) => {
       ref={dropDownRef}
       id="menuButton"
       onClick={() => setIsOpen((prev) => !prev)}
-      className="cursor-pointer"
+      className="cursor-pointer text-main"
       dangerouslySetInnerHTML={{ __html: openButtonText }}
     ></div>
   );

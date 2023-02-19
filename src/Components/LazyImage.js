@@ -1,7 +1,6 @@
 import useImageLazyLoad from "../hooks/lazyload";
-import basic_img from "../assets/basic_thumbnail.png";
 
-const LazyImage = ({ src, alt, className }) => {
+const LazyImage = ({ src, alt, className, basic_img }) => {
   const [imageSrc, imageRef] = useImageLazyLoad(src ?? basic_img);
   return (
     <img

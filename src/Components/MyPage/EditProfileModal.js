@@ -1,17 +1,60 @@
-import { useContext, useEffect, useState } from "react";
-import { editProfileFetch } from "../../api/userFetch";
-import UserContext from "../../context/user-context";
+import { useContext, useRef, useState } from "react";
+import {
+  checkNickNameOverlapFetch,
+  editProfileFetch,
+} from "../../api/userFetch";
 import { nickNameRule } from "../../utility/input-rules";
 import Loading from "../Loading";
+import basicProfile from "../../assets/basic_profile.jpg";
+import SignInputContext from "../../context/check-signInput-context";
 
-const EditProfileModal = ({ userImage, introduction, nickName, setModal }) => {
-  const { userInfo } = useContext(UserContext);
+const EditProfileModal = ({
+  userImage,
+  introduction,
+  nickName,
+  setModal,
+  userId,
+}) => {
   const [editUserImage, setEditUserImage] = useState(userImage);
-  const [editNickName, setEditNickName] = useState(nickName);
-  const [editIntroduction, setEditIntroduction] = useState(introduction);
-  const [isValid, setIsValid] = useState(true);
+  const { info, updateNickNameInfo } = useContext(SignInputContext);
+  const {
+    nickNameInfo: { isValid, error },
+  } = info;
   const [isLoading, setIsLoading] = useState(false);
-  //유저가 입력을 하고 있을때는 settimed을 계속 돌린다
+  const [errorMessage, setErrorMessage] = useState("");
+  const nickNameRef = useRef(null);
+  const introductionRef = useRef(null);
+
+  const touchedInput = () => {
+    const { value } = nickNameRef?.current;
+
+    if (value === "") {
+      setErrorMessage("닉네임을 입력하세요");
+      updateNickNameInfo(false, true);
+      return;
+    } else if (!nickNameRule.test(value)) {
+      setErrorMessage("닉네임 형식이 올바르지 않습니다.");
+      updateNickNameInfo(false, true);
+      return;
+    }
+
+    checkOverlapNickName();
+  };
+
+  const checkOverlapNickName = async () => {
+    const { value } = nickNameRef.current;
+    try {
+      const response = await checkNickNameOverlapFetch(value);
+      if (response.ok) {
+        updateNickNameInfo(true, false);
+      } else {
+        updateNickNameInfo(false, true);
+        throw new Error("중복된 넥네임 입니다.");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
 
   const changeProfileImg = (e) => {
     let reader = new FileReader();
@@ -22,28 +65,22 @@ const EditProfileModal = ({ userImage, introduction, nickName, setModal }) => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
-  const changeEditNickName = (e) => {
-    setEditNickName(e.target.value);
-  };
-
-  const changeEditIntroduction = (e) => {
-    setEditIntroduction(e.target.value);
-  };
-
   const submitEditProfile = async (e) => {
     e.preventDefault();
-    if (!nickNameRule.test(editNickName)) return;
+    if (!isValid) return;
+    const { value: editNickName } = nickNameRef?.current;
+    const { value: editIntroduction } = introductionRef?.current;
+
     setIsLoading(true);
     try {
       const response = await editProfileFetch(
-        userInfo,
         editUserImage,
         editNickName,
         editIntroduction
       );
       if (response.ok) {
         setModal(false);
-        window.location.replace("/users/1");
+        window.location.replace(`/users/${userId}`);
       } else {
         throw new Error("중복된 닉네임 입니다.");
       }
@@ -52,18 +89,6 @@ const EditProfileModal = ({ userImage, introduction, nickName, setModal }) => {
     }
     setIsLoading(false);
   };
-
-  useEffect(() => {
-    const testUserNickName = setTimeout(() => {
-      if (nickNameRule.test(editNickName)) {
-        setIsValid(true);
-      } else {
-        setIsValid(false);
-      }
-    }, 1000);
-    return () => clearTimeout(testUserNickName);
-  }, [editNickName]);
-
   return (
     <>
       <div
@@ -84,10 +109,7 @@ const EditProfileModal = ({ userImage, introduction, nickName, setModal }) => {
               <img
                 className="w-[70px] h-[70px] rounded-full object-center object-cover"
                 alt="유저 프로필 이미지"
-                src={`${
-                  editUserImage ??
-                  "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/436/8142f53e51d2ec31bc0fa4bec241a919_crop.jpeg"
-                }`}
+                src={`${editUserImage || basicProfile}`}
               />
               <label
                 className="text-sub border-2 border-sub rounded-[3px] cursor-pointer"
@@ -115,19 +137,18 @@ const EditProfileModal = ({ userImage, introduction, nickName, setModal }) => {
                     isValid ? "border-green-600" : "border-red-600"
                   }`}
                   autoComplete="off"
-                  value={editNickName}
-                  onChange={changeEditNickName}
+                  ref={nickNameRef}
+                  onBlur={touchedInput}
+                  defaultValue={nickName}
                 />
-                <p className="text-sm text-sub">3자 이상 8자 이하</p>
+                {error && <p className="text-sm text-sub">{errorMessage}</p>}
               </label>
-
               <textarea
+                defaultValue={introduction}
                 placeholder="소개 글"
                 type="text"
                 id="introduction"
                 className="resize-none h-20 bg-sub rounded-[10px] outline-none p-2"
-                value={editIntroduction}
-                onChange={changeEditIntroduction}
               ></textarea>
             </div>
             <button

@@ -1,27 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { getPostListFetch } from "../../api/postFetch";
 import Loading from "../Loading";
 import styled from "styled-components";
 import Card from "../Card";
 
-const PostList = () => {
-  const [searchParams] = useSearchParams();
+const PostList = ({ category }) => {
   const [post, setPost] = useState([]);
   const [isLodding, setIsLoading] = useState(false);
-  const currentCategory = searchParams.get("category");
-
-  console.log(currentCategory);
 
   useEffect(() => {
     const getPostListData = async () => {
       setIsLoading(true);
-      const { data } = await getPostListFetch(currentCategory);
-      setPost(data.content);
+      const data = await getPostListFetch(category);
+      setPost(data?.data);
       setIsLoading(false);
     };
     getPostListData();
-  }, [currentCategory]);
+  }, [category]);
   return (
     <>
       {isLodding ? (
@@ -41,7 +36,7 @@ const PostList = () => {
   );
 };
 
-const GridCard = styled.div`
+export const GridCard = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
   gap: 30px;

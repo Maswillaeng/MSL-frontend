@@ -5,51 +5,110 @@ import EditProfileModal from "../Components/MyPage/EditProfileModal";
 import UserContext from "../context/user-context";
 import UserIntroduction from "../Components/MyPage/UserIntroduction";
 import Category from "../Components/UI/Category";
-import MyPostList from "../Components/MyPage/MyPostList";
 import Loading from "../Components/Loading";
-import { getUserInfoFetch, userPostListFetch } from "../api/userFetch";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import basicImage from "../assets/basic_profile.jpg";
+import {
+  getSomeoneUserInfoFetch,
+  getUserInfoFetch,
+  userPostListFetch,
+} from "../api/userFetch";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import useCategory from "../hooks/useCategory";
+import Card from "../Components/Card";
+import { GridCard } from "../Components/Board/PostList";
+import styled from "styled-components";
+
+const categoryList = [
+  { id: "", category: "전체" },
+  { id: "RECIPE", category: "레시피" },
+  { id: "BAR_SNACK", category: "안주 추천" },
+  { id: "FREE", category: "자유" },
+];
 
 const MyPage = () => {
-  const { userInfo, getUserInfo } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const { introduction, nickName, userImage } = userInfo;
-  const category = ["나의 글", "좋아요 글"];
+  const { userId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
-  const [postList, setPostList] = useState([]);
-  const [totalPage, setTotalPage] = useState("");
-  const navigation = useNavigate();
-  const { search, pathname } = useLocation();
-  const [searchParams] = useSearchParams();
+  const [postList, setPostList] = useState([
+    {
+      postId: 12,
+      title: "칵테일 레시피",
+      createdAt: "2023-02-08T18:07:17.788471",
+      thumbNail: basicImage,
+      hits: 15,
+      commentCnt: 20,
+      likeCnt: 150,
+    },
+    {
+      postId: 13,
+      title: "칵테일 레시피",
+      createdAt: "2023-02-08T18:07:17.788471",
+      thumbNail: basicImage,
+      hits: 15,
+      commentCnt: 20,
+      likeCnt: 150,
+    },
+    {
+      postId: 14,
+      title: "칵테일 레시피",
+      createdAt: "2023-02-08T18:07:17.788471",
+      thumbNail: basicImage,
+      hits: 15,
+      commentCnt: 20,
+      likeCnt: 150,
+    },
+    {
+      postId: 15,
+      title: "칵테일 레시피",
+      createdAt: "2023-02-08T18:07:17.788471",
+      thumbNail: basicImage,
+      hits: 15,
+      commentCnt: 20,
+      likeCnt: 150,
+    },
+    {
+      postId: 16,
+      title: "칵테일 레시피",
+      createdAt: "2023-02-08T18:07:17.788471",
+      thumbNail: basicImage,
+      hits: 15,
+      commentCnt: 20,
+      likeCnt: 150,
+    },
+  ]);
+  const [someoneInfo, setSomeoneInfo] = useState({
+    nickName: "정채운",
+    introduction: "안녕하세요 저는 칵테일을 좋아합니다.",
+    userImage: basicImage,
+  });
+  const { category, changeCurrentCategory } = useCategory("myCategory");
 
-  const page = searchParams.get("currentPage");
+  // useEffect(() => {
+  //   const userPostListData = async () => {
+  //     setIsLoading(true);
+  //     const { data } = await userPostListFetch(category);
+  //     setPostList(data);
+  //     setIsLoading(false);
+  //   };
+  //   userPostListData();
+  // }, [category]);
 
-  useEffect(() => {
-    const userInfoData = async () => {
-      setIsLoading(true);
-      const { data } = await getUserInfoFetch();
-      if (!data) {
-        return navigation(-1);
-      }
-      getUserInfo(data);
-      setIsLoading(false);
-    };
-    userInfoData();
-  }, []);
-
-  useEffect(() => {
-    const userPostListData = async () => {
-      setIsLoading(true);
-      const { data, totalElements } = await userPostListFetch(search);
-      if (!data) {
-        return navigation(-1);
-      }
-      setTotalPage(totalElements);
-      setPostList(data);
-      setIsLoading(false);
-    };
-    userPostListData();
-  }, []);
+  // useEffect(() => {
+  //   const someoneInfoData = async () => {
+  //     setIsLoading(true);
+  //     const data = await getSomeoneUserInfoFetch(userId);
+  //     setSomeoneInfo(data);
+  //     setIsLoading(false);
+  //   };
+  //   someoneInfoData();
+  // }, [userId]);
 
   return (
     <>
@@ -57,25 +116,24 @@ const MyPage = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="relative mt-20 mx-[200px]">
+        <div className="relative mt-10 mx-[100px]">
           <UserIntroduction
-            nickName={nickName}
-            introduction={introduction}
-            userImage={userImage}
+            nickName={someoneInfo.nickName}
+            introduction={someoneInfo.introduction}
+            userImage={someoneInfo.userImage}
             setModal={setModal}
           />
-          <Category categoryList={category} />
-          <div className="mb-7">
-            <ul className="flex flex-col gap-3">
-              {postList?.map(({ postId, title, nickName, createdAt }) => (
-                <MyPostList
-                  listPostId={postId}
-                  listPostTitle={title}
-                  listPostNickName={nickName}
-                  listPostCreatedAt={createdAt}
-                />
+          <Category
+            categoryList={categoryList}
+            category={category}
+            changeCurrentCategory={changeCurrentCategory}
+          />
+          <div className="mt-7">
+            <Grid>
+              {postList?.map((ele) => (
+                <Card key={ele.postId} ele={ele} />
               ))}
-            </ul>
+            </Grid>
           </div>
         </div>
       )}
@@ -86,10 +144,13 @@ const MyPage = () => {
           nickName={nickName}
           setModal={setModal}
           modal={modal}
+          userId={userId}
         />
       ) : null}
     </>
   );
 };
+
+const Grid = styled(GridCard)``;
 
 export default MyPage;

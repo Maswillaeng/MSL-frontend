@@ -13,29 +13,36 @@ import Loading from "../Components/Loading";
 import UserContext from "../context/user-context";
 import DropDown from "../Components/UI/DropDown";
 import useFindOpenBarAndClose from "../hooks/useFindOpenBarAndClose";
-import PostContext from "../context/post-context";
 
-const openButtonText = "카테고리 설정";
+const categoryList = [
+  { id: "RECIPE", category: "레시피" },
+  { id: "BAR_SNACK", category: "안주 추천" },
+  { id: "FREE", category: "자유" },
+];
 
 const BoardCreate = () => {
   const { userInfo } = useContext(UserContext);
-  const { categoryList } = useContext(PostContext);
   const navigation = useNavigate();
   const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState("all");
+  const [categoryId, setCategoryId] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isLoading, setIsLoading] = useState(false);
+  const [openButtonText, setOpenButtonText] = useState("카테고리");
   const dropDownRef = useRef(null);
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
   const editorToHtml = draftToHtml(
     convertToRaw(editorState.getCurrentContent())
   );
 
+  console.log(categoryId);
   const submitPostData = async (e) => {
     e.preventDefault();
     if (title === "") {
       alert("제목을 입력해주세요");
       return;
+    }
+    if (categoryId === "") {
+      alert("카테고리를 설정해주세요");
     }
     setIsLoading(true);
     await createPostFetch(userInfo.nickName, title, editorToHtml, categoryId);
@@ -46,6 +53,7 @@ const BoardCreate = () => {
 
   const changeCategory = (e) => {
     setCategoryId(e.target.id);
+    setOpenButtonText(e.target.innerText);
   };
 
   useEffect(() => {
@@ -85,37 +93,39 @@ const BoardCreate = () => {
             />
           </div>
           <footer className="flex fixed left-0 bottom-0 w-screen bg-sub h-16 ">
-            <label className="relative">
-              <DropDown
-                openButtonText={openButtonText}
-                dropDownRef={dropDownRef}
-                setIsOpen={setIsOpen}
-              />
-              {isOpen ? (
-                <ul className="absolute z-20 bg-sub rounded-[5px] -top-36 left-3 text-center break-keep">
-                  {categoryList.map((ele) => (
-                    <li
-                      id={ele.id}
-                      onClick={changeCategory}
-                      className={`${
-                        categoryId === ele.id
-                          ? "bg-red-200"
-                          : "hover:bg-red-200"
-                      } pointer`}
-                      key={ele.id}
-                    >
-                      {ele.category}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </label>
-            <button
-              type="submit"
-              className="submit-button absolute right-12 bg-main rounded-full w-[100px] h-10 text-sub mt-3"
-            >
-              완료
-            </button>
+            <div className="flex justify-end w-full items-center gap-10 px-10">
+              <label className="relative">
+                <DropDown
+                  openButtonText={openButtonText}
+                  dropDownRef={dropDownRef}
+                  setIsOpen={setIsOpen}
+                />
+                {isOpen ? (
+                  <ul className="absolute z-50 bg-sub rounded-[5px] -top-36 left-3 text-center break-keep">
+                    {categoryList.map((ele) => (
+                      <li
+                        id={ele.id}
+                        onClick={changeCategory}
+                        className={`${
+                          categoryId === ele.id
+                            ? "bg-red-200"
+                            : "hover:bg-red-200"
+                        } pointer text-main`}
+                        key={ele.id}
+                      >
+                        {ele.category}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </label>
+              <button
+                type="submit"
+                className="submit-button bg-main rounded-full w-[100px] h-10 text-sub"
+              >
+                완료
+              </button>
+            </div>
           </footer>
         </form>
       </div>

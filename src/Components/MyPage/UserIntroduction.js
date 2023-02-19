@@ -21,18 +21,28 @@ const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
       navigation(`/users/${userId}`);
     }
   };
+
+  const followUser = () => {
+    console.log("hgi");
+  };
   return (
     <div className="mb-10">
-      <div className="absolute right-0 flex gap-5">
-        <button onClick={clickEditProfile} className="button">
-          프로필 수정
-        </button>
-        {userInfo.nickName === nickName ? (
+      {userInfo.nickName === nickName ? (
+        <div className="absolute right-0 flex gap-5">
+          <button onClick={clickEditProfile} className="button">
+            프로필 수정
+          </button>
           <button className="button" onClick={deleteUserHandler}>
             회원 탈퇴
           </button>
-        ) : null}
-      </div>
+        </div>
+      ) : (
+        <div className="absolute right-0 flex gap-5">
+          <button onClick={followUser} className="button">
+            팔로우
+          </button>
+        </div>
+      )}
       <div className="flex">
         <img
           alt="유저 이미지"
@@ -40,7 +50,7 @@ const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
           className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 object-cover object-center rounded-full"
         />
         <ul>
-          <li>닉네임: {nickName}</li>
+          <li>{nickName}</li>
           <li>{`소개 글: ${introduction}`}</li>
         </ul>
       </div>
