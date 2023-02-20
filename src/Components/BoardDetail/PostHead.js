@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deletePostFetch } from "../../api/postFetch";
 import UserContext from "../../context/user-context";
 import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
@@ -16,6 +16,7 @@ const PostHead = ({
   postId,
   postUserImage,
   userInfo,
+  postUserId,
   isReported,
   createdAt,
 }) => {
@@ -32,7 +33,7 @@ const PostHead = ({
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (answer) {
       await deletePostFetch(postId);
-      navigation("/post/page/1");
+      navigation("/");
     } else {
       navigation(`/post/detail/${postId}`);
     }
@@ -40,13 +41,17 @@ const PostHead = ({
   return (
     <div className="flex justify-between border-b-2 border-main pb-5">
       <div className="flex">
-        <img
-          className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
-          alt="해당 게시물 유저 이미지"
-          src={postUserImage}
-        />
+        <Link to={`/users/${postUserId}`}>
+          <img
+            className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
+            alt="해당 게시물 유저 이미지"
+            src={postUserImage}
+          />
+        </Link>
         <ul>
-          <li>{postUserNickName}</li>
+          <li>
+            <Link to={`/users/${postUserId}`}>{postUserNickName}</Link>
+          </li>
           <li>
             {changeDateFormat(createdAt, {
               year: "2-digit",
@@ -68,10 +73,10 @@ const PostHead = ({
               <ul className="absolute z-20 bg-sub rounded-[5px] top-8 -left-1 text-center break-keep">
                 {userInfo.nickName === postUserNickName ? (
                   <>
-                    <li className="pointer" onClick={deletePost}>
+                    <li className="pointer" onClick={getModifyPage}>
                       수정
                     </li>
-                    <li className="pointer" onClick={getModifyPage}>
+                    <li className="pointer" onClick={deletePost}>
                       삭제
                     </li>
                   </>

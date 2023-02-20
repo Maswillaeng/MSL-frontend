@@ -31,26 +31,28 @@ export const createPostFetch = async (
 };
 
 export const updatePostFetch = async (
-  nickName,
+  thumbnail,
   title,
   editorToHtml,
   postId,
-  userImage
+  categoryId
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/post/${postId}`, {
+    const response = await fetch(`${BASE_URL}/api/post`, {
       method: "PUT",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        nickName,
+        thumbnail,
         title,
         content: editorToHtml,
-        userImage,
+        postId,
+        category: categoryId,
       }),
     });
+    console.log(response);
     if (response.ok) {
       //
     } else {
@@ -108,13 +110,13 @@ export const getPostListFetch = async (category) => {
 
 export const changeImgFormat = async (imageObject) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/changeFomatImage`, {
+    const response = await fetch(`${BASE_URL}/api/changeFormatImage`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(imageObject),
+      body: JSON.stringify({ imageObject }),
     });
     if (response.ok) {
       return await response.json();
@@ -126,35 +128,34 @@ export const changeImgFormat = async (imageObject) => {
   }
 };
 
-export const updateLikeNumberFetch = async (sendLikeValue) => {
-  return await fetch(`${BASE_URL}/api`, {
+export const updateLikeNumberFetch = async (postId) => {
+  return await fetch(`${BASE_URL}/api/post-like/${postId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(sendLikeValue),
+    // body: JSON.stringify(sendLikeValue),
   });
 };
 
-export const updateCommentLikeNumberFetch = async (sendLikeValue) => {
-  return await fetch(`${BASE_URL}/api`, {
+export const updateCommentLikeNumberFetch = async (commentId) => {
+  return await fetch(`${BASE_URL}/api/comment-like/${commentId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(sendLikeValue),
   });
 };
 
 export const createCommentFetch = async (value) => {
-  return await fetch(`${BASE_URL}/api`, {
+  return await fetch(`${BASE_URL}/api/comment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(value),
+    body: JSON.stringify({ postId: 4, content: value }),
   });
 };

@@ -21,16 +21,12 @@ const menuList = [
 
 const PostComment = () => {
   const { isLoggedIn, userInfo } = useContext(UserContext);
-  const {
-    getPostInfo,
-    postInfo: { commentObj },
-  } = useContext(PostContext);
+  const { getPostInfo, postInfo } = useContext(PostContext);
   const navigation = useNavigate();
   const { postId } = useParams();
-  const { commentNumber, commentList } = commentObj;
   const dropDownRef = useRef(null);
   const commentRef = useRef(null);
-  const [comments, setComments] = useState(commentList);
+  const [comments, setComments] = useState(postInfo?.commentList);
   const [isLoading, setIsLoading] = useState(false);
   const [commentSortId, setCommentSortId] = useState(
     localStorage.getItem("sortId") ?? "popularity"
@@ -45,11 +41,9 @@ const PostComment = () => {
     try {
       const response = await createCommentFetch(value);
       if (response.ok) {
-        const {
-          data: { postObj },
-        } = await getPostDetailFetch(postId);
+        const { data } = await getPostDetailFetch(postId);
 
-        getPostInfo(postObj);
+        getPostInfo(data);
         setIsLoading(false);
       } else {
         throw new Error("서버 에러");
@@ -87,7 +81,6 @@ const PostComment = () => {
   return (
     <div className="w-full mt-10">
       <div className="flex">
-        <span className="mr-5">댓글 {commentNumber}개</span>
         <label className="relative">
           <DropDown
             openButtonText={openButtonText}
@@ -124,7 +117,7 @@ const PostComment = () => {
             <img
               className="max-w-[40px] max-h-[40px] min-w-[40px] min-h-[40px] mr-2 rounded-full"
               alt="사용자 프로필 이미지"
-              src={basicProfile}
+              src={userInfo.userImage || basicProfile}
             />
             <textarea
               ref={commentRef}
@@ -141,13 +134,14 @@ const PostComment = () => {
         </form>
       )}
       <ul className="w-full">
-        {comments.map((ele) =>
-          ele.nickName === userInfo.nickName ? (
-            <CommentList key={ele.id} ele={ele} basicProfile={basicProfile} />
-          ) : (
-            <CommentList key={ele.id} ele={ele} basicProfile={basicProfile} />
-          )
-        )}
+        {comments?.map((ele) => (
+          <CommentList
+            key={ele.commentId}
+            ele={ele}
+            basicProfile={basicProfile}
+            commentUserId={postInfo.userId}
+          />
+        ))}
       </ul>
     </div>
   );

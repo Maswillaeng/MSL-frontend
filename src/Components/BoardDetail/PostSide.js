@@ -6,13 +6,14 @@ import { updateLikeNumberFetch } from "../../api/postFetch";
 import UserContext from "../../context/user-context";
 import useToggleLike from "../../hooks/useToggleLike";
 
-const PostSide = ({ likeNumber, isLiked }) => {
+const PostSide = ({ likeNumber, isLiked, postId }) => {
   const { isLoggedIn } = useContext(UserContext);
   const { isLike, likeCount, toggleLike } = useToggleLike(
     isLoggedIn,
     likeNumber,
     isLiked,
-    updateLikeNumberFetch
+    updateLikeNumberFetch,
+    postId
   );
   const copyUrlListRef = useRef(null);
 

@@ -1,8 +1,17 @@
 import { Editor } from "react-draft-wysiwyg";
 import { useEffect } from "react";
-import { changeImgFormat } from "../../api/postFetch";
+import { changeImgFormat } from "../api/postFetch";
+import { useState } from "react";
 
-const Content = ({ editorState, setEditorState, editorToHtml }) => {
+const PostContent = ({
+  editorState,
+  setEditorState,
+  editorToHtml,
+  getUploadImageArray,
+  localStorageKey,
+}) => {
+  const [uploadImages] = useState([]);
+
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
   };
@@ -12,8 +21,10 @@ const Content = ({ editorState, setEditorState, editorToHtml }) => {
       file: file,
       localSrc: URL.createObjectURL(file),
     };
+    console.log(imageObject);
     const data = await changeImgFormat(imageObject);
-
+    uploadImages.push(data);
+    getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {
       resolve({
         data: {
@@ -25,7 +36,7 @@ const Content = ({ editorState, setEditorState, editorToHtml }) => {
 
   useEffect(() => {
     const saveContent = setTimeout(() => {
-      localStorage.setItem("content", editorToHtml);
+      localStorage.setItem(localStorageKey, editorToHtml);
     }, 1500);
     return () => {
       clearTimeout(saveContent);
@@ -70,4 +81,4 @@ const Content = ({ editorState, setEditorState, editorToHtml }) => {
   );
 };
 
-export default Content;
+export default PostContent;

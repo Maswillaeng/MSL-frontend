@@ -1,8 +1,20 @@
-const ModifyTitle = ({ title, setSubmitTitle }) => {
+import { useEffect } from "react";
+
+const PostTitle = ({ title, setTitle, localStorageKey }) => {
   const userTypingTitle = (e) => {
     const { value } = e.target;
-    setSubmitTitle(value);
+    setTitle(value);
   };
+
+  useEffect(() => {
+    const saveTitle = setTimeout(() => {
+      localStorage.setItem(localStorageKey, title);
+    }, 1500);
+    return () => {
+      clearTimeout(saveTitle);
+    };
+  }, [title]);
+
   return (
     <div className="border-b-2 mb-8 border-main">
       <textarea
@@ -16,4 +28,4 @@ const ModifyTitle = ({ title, setSubmitTitle }) => {
   );
 };
 
-export default ModifyTitle;
+export default PostTitle;

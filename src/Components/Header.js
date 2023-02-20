@@ -72,7 +72,7 @@ const Header = () => {
               {isOpen ? (
                 <ul className="absolute z-20 bg-sub rounded-[5px] top-14 -left-2 text-center break-keep text-main">
                   <li>
-                    <Link to={`users/1`}>
+                    <Link to={`/users/1`}>
                       <button>마이페이지</button>
                     </Link>
                   </li>

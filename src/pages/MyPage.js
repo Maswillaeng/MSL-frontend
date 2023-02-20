@@ -46,42 +46,6 @@ const MyPage = () => {
       commentCnt: 20,
       likeCnt: 150,
     },
-    {
-      postId: 13,
-      title: "칵테일 레시피",
-      createdAt: "2023-02-08T18:07:17.788471",
-      thumbNail: basicImage,
-      hits: 15,
-      commentCnt: 20,
-      likeCnt: 150,
-    },
-    {
-      postId: 14,
-      title: "칵테일 레시피",
-      createdAt: "2023-02-08T18:07:17.788471",
-      thumbNail: basicImage,
-      hits: 15,
-      commentCnt: 20,
-      likeCnt: 150,
-    },
-    {
-      postId: 15,
-      title: "칵테일 레시피",
-      createdAt: "2023-02-08T18:07:17.788471",
-      thumbNail: basicImage,
-      hits: 15,
-      commentCnt: 20,
-      likeCnt: 150,
-    },
-    {
-      postId: 16,
-      title: "칵테일 레시피",
-      createdAt: "2023-02-08T18:07:17.788471",
-      thumbNail: basicImage,
-      hits: 15,
-      commentCnt: 20,
-      likeCnt: 150,
-    },
   ]);
   const [someoneInfo, setSomeoneInfo] = useState({
     nickName: "정채운",
@@ -90,25 +54,27 @@ const MyPage = () => {
   });
   const { category, changeCurrentCategory } = useCategory("myCategory");
 
-  // useEffect(() => {
-  //   const userPostListData = async () => {
-  //     setIsLoading(true);
-  //     const { data } = await userPostListFetch(category);
-  //     setPostList(data);
-  //     setIsLoading(false);
-  //   };
-  //   userPostListData();
-  // }, [category]);
+  useEffect(() => {
+    const userPostListData = async () => {
+      setIsLoading(true);
+      const { data } = await userPostListFetch(category);
+      console.log(data);
+      setPostList(data);
+      setIsLoading(false);
+    };
+    userPostListData();
+  }, [category]);
 
-  // useEffect(() => {
-  //   const someoneInfoData = async () => {
-  //     setIsLoading(true);
-  //     const data = await getSomeoneUserInfoFetch(userId);
-  //     setSomeoneInfo(data);
-  //     setIsLoading(false);
-  //   };
-  //   someoneInfoData();
-  // }, [userId]);
+  useEffect(() => {
+    const someoneInfoData = async () => {
+      setIsLoading(true);
+      const data = await getSomeoneUserInfoFetch(userId);
+      console.log(data);
+      setSomeoneInfo(data);
+      setIsLoading(false);
+    };
+    someoneInfoData();
+  }, [userId]);
 
   return (
     <>

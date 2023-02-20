@@ -14,7 +14,6 @@ const AuthTest = (Component, option) => {
           const response = await getUserInfoFetch();
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
             if (data?.loggedIn === false) {
               if (option === "ONLY_LOGIN") {
                 navigation("/login");

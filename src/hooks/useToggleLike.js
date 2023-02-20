@@ -1,9 +1,14 @@
 import { useState } from "react";
 
-const useToggleLike = (isLoggedIn, likeNumber, isLiked, updateLikeFetch) => {
+const useToggleLike = (
+  isLoggedIn,
+  likeNumber,
+  isLiked,
+  updateLikeFetch,
+  Id
+) => {
   const [likeCount, setLikeCount] = useState(likeNumber);
   const [isLike, setIsLike] = useState(isLiked);
-
   const toggleLike = async () => {
     if (!isLoggedIn) {
       alert("로그인 후 이용해주세요");
@@ -16,7 +21,7 @@ const useToggleLike = (isLoggedIn, likeNumber, isLiked, updateLikeFetch) => {
       sendLikeValue += 1;
     }
     try {
-      const response = await updateLikeFetch(sendLikeValue);
+      const response = await updateLikeFetch(Id);
       if (response.ok) {
         if (isLike) {
           setLikeCount((prev) => prev - 1);

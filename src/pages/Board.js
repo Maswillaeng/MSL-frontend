@@ -15,7 +15,6 @@ const categoryList = [
 
 const Board = () => {
   const { changeCurrentCategory, category } = useCategory("postCategory");
-  console.log(category);
   return (
     <>
       <Header />

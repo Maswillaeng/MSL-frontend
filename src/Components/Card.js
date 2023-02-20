@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { changeDateFormat, formatNumber } from "../utility/chage-format";
 import LazyImage from "./LazyImage";
+import basicProfile from "../assets/basic_profile.jpg";
 
 const Card = ({ ele }) => {
   const { pathname } = useLocation();
@@ -11,7 +12,7 @@ const Card = ({ ele }) => {
           <LazyImage
             alt={"게시물 썸네일"}
             className="object-cover object-center w-full h-[150px] rounded-t-[10px]"
-            src={ele.thumbNail}
+            src={ele.thumbNail || basicProfile}
           />
         </Link>
       </div>
@@ -44,11 +45,11 @@ const Card = ({ ele }) => {
       <div className="flex justify-between p-3 border-t-[1px] border-sub">
         {pathname.includes("users") ? null : (
           <div>
-            <Link to={""} className="flex">
+            <Link to={`/users/${ele.userId}`} className="flex">
               <LazyImage
                 alt={"유저 이미지"}
                 className="object-cover object-center w-[30px] h-[30px] rounded-full mr-3"
-                src={ele.userImage}
+                src={ele.userImage || basicProfile}
               />
               <span className="text-sm mt-2">{ele.nickName}</span>
             </Link>

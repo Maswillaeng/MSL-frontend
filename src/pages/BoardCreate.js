@@ -1,24 +1,17 @@
 import Header from "../Components/Header";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/input.css";
 import { EditorState, convertToRaw, ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useNavigate } from "react-router-dom";
-import Title from "../Components/CreateBoard/Title";
-import Content from "../Components/CreateBoard/Content";
 import draftToHtml from "draftjs-to-html";
 import { createPostFetch } from "../api/postFetch";
 import Loading from "../Components/Loading";
 import UserContext from "../context/user-context";
-import DropDown from "../Components/UI/DropDown";
-import useFindOpenBarAndClose from "../hooks/useFindOpenBarAndClose";
-
-const categoryList = [
-  { id: "RECIPE", category: "레시피" },
-  { id: "BAR_SNACK", category: "안주 추천" },
-  { id: "FREE", category: "자유" },
-];
+import PostFooter from "../Components/PostFooter";
+import PostContent from "../Components/PostContent";
+import PostTitle from "../Components/PostTitle";
 
 const BoardCreate = () => {
   const { userInfo } = useContext(UserContext);
@@ -27,14 +20,18 @@ const BoardCreate = () => {
   const [categoryId, setCategoryId] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isLoading, setIsLoading] = useState(false);
-  const [openButtonText, setOpenButtonText] = useState("카테고리");
-  const dropDownRef = useRef(null);
-  const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
+  const [thumbnail, setThumbnail] = useState("");
+
+  const getUploadImageArray = (imageArray) => {
+    if (imageArray.length > 0) {
+      setThumbnail(imageArray[0]);
+    }
+  };
+
   const editorToHtml = draftToHtml(
     convertToRaw(editorState.getCurrentContent())
   );
 
-  console.log(categoryId);
   const submitPostData = async (e) => {
     e.preventDefault();
     if (title === "") {
@@ -43,22 +40,25 @@ const BoardCreate = () => {
     }
     if (categoryId === "") {
       alert("카테고리를 설정해주세요");
+      return;
     }
     setIsLoading(true);
-    await createPostFetch(userInfo.nickName, title, editorToHtml, categoryId);
+    await createPostFetch(
+      userInfo.nickName,
+      title,
+      editorToHtml,
+      categoryId,
+      thumbnail
+    );
     setIsLoading(false);
-    localStorage.clear();
+    localStorage.removeItem("createTitle");
+    localStorage.removeItem("createContent");
     navigation(`/users/${userInfo.nickName}`);
   };
 
-  const changeCategory = (e) => {
-    setCategoryId(e.target.id);
-    setOpenButtonText(e.target.innerText);
-  };
-
   useEffect(() => {
-    const title = localStorage.getItem("title") ?? "";
-    const content = localStorage.getItem("content") ?? "<p></p> ";
+    const title = localStorage.getItem("createTitle") ?? "";
+    const content = localStorage.getItem("createContent") ?? "<p></p> ";
     const blocksFromHtml = htmlToDraft(content);
 
     let userAnswer;
@@ -85,48 +85,20 @@ const BoardCreate = () => {
       <div className={`pt-5 min-w-[1000px]  mx-20 flex justify-center`}>
         <form className="flex flex-col w-7/12" onSubmit={submitPostData}>
           <div>
-            <Title title={title} setTitle={setTitle} />
-            <Content
+            <PostTitle
+              title={title}
+              setTitle={setTitle}
+              localStorageKey="createTitle"
+            />
+            <PostContent
               editorState={editorState}
               setEditorState={setEditorState}
               editorToHtml={editorToHtml}
+              getUploadImageArray={getUploadImageArray}
+              localStorageKey="createContent"
             />
           </div>
-          <footer className="flex fixed left-0 bottom-0 w-screen bg-sub h-16 ">
-            <div className="flex justify-end w-full items-center gap-10 px-10">
-              <label className="relative">
-                <DropDown
-                  openButtonText={openButtonText}
-                  dropDownRef={dropDownRef}
-                  setIsOpen={setIsOpen}
-                />
-                {isOpen ? (
-                  <ul className="absolute z-50 bg-sub rounded-[5px] -top-36 left-3 text-center break-keep">
-                    {categoryList.map((ele) => (
-                      <li
-                        id={ele.id}
-                        onClick={changeCategory}
-                        className={`${
-                          categoryId === ele.id
-                            ? "bg-red-200"
-                            : "hover:bg-red-200"
-                        } pointer text-main`}
-                        key={ele.id}
-                      >
-                        {ele.category}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </label>
-              <button
-                type="submit"
-                className="submit-button bg-main rounded-full w-[100px] h-10 text-sub"
-              >
-                완료
-              </button>
-            </div>
-          </footer>
+          <PostFooter categoryId={categoryId} setCategoryId={setCategoryId} />
         </form>
       </div>
       {isLoading ? <Loading /> : null}

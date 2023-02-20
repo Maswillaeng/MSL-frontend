@@ -22,7 +22,7 @@ export const loginFetch = async (idValue, passwordValue) => {
 };
 
 export const logoutFetch = async () => {
-  return await fetch(`${BASE_URL}/logout`, {
+  return await fetch(`${BASE_URL}/api/logout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,7 +46,6 @@ export const userSignFetch = async (
       email: emailValue,
       nickName: nickNameValue,
       password: passwordValue,
-      userImage: basicProfile,
     }),
   });
 };
@@ -59,7 +58,7 @@ export const getUserInfoFetch = async () => {
 
 export const getSomeoneUserInfoFetch = async (userId) => {
   try {
-    return await fetch(`${BASE_URL}/api/userInfo?userId=${userId}`, {
+    return await fetch(`${BASE_URL}/api/userInfo/${userId}`, {
       credentials: "include",
     });
   } catch (error) {}
