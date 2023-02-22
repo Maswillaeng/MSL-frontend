@@ -15,7 +15,6 @@ const PostFooter = ({ categoryId, setCategoryId }) => {
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
 
   const changeCategory = (e) => {
-    console.log(e.target.id);
     setCategoryId(e.target.id);
     setOpenButtonText(e.target.innerText);
   };

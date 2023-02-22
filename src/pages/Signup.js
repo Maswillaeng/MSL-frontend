@@ -2,7 +2,6 @@ import EmailInput from "../Components/Sign/EmailInput";
 import PasswordInput from "../Components/Sign/PasswordInput";
 import CheckPasswordInput from "../Components/Sign/CheckPasswordInput";
 import NickNameInput from "../Components/Sign/NickNameInput";
-import PhoneInput from "../Components/Sign/PhoneInput";
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SignInputContext from "../context/check-signInput-context";
@@ -17,15 +16,8 @@ const Signup = () => {
     updatePasswordInfo,
     updateCheckPasswordInfo,
     updateNickNameInfo,
-    updatePhoneInfo,
   } = useContext(SignInputContext);
-  const {
-    emailInfo,
-    passwordInfo,
-    checkPasswordInfo,
-    nickNameInfo,
-    phoneInfo,
-  } = info;
+  const { emailInfo, passwordInfo, checkPasswordInfo, nickNameInfo } = info;
 
   const emailRef = useRef(null);
   const nickNameRef = useRef(null);
@@ -39,18 +31,13 @@ const Signup = () => {
     emailInfo.isValid &&
     passwordInfo.isValid &&
     checkPasswordInfo.isValid &&
-    nickNameInfo.isValid &&
-    phoneInfo.isValid;
+    nickNameInfo.isValid;
 
   const submitUserInfo = async (e) => {
     e.preventDefault();
     const { value: emailValue } = emailRef.current;
     const { value: nickNameValue } = nickNameRef.current;
     if (!formIsValid) {
-      if (!phoneInfo.isValid) {
-        updatePhoneInfo(false, true);
-        e.target[4].focus();
-      }
       if (!nickNameInfo.isValid) {
         updateNickNameInfo(false, true);
         e.target[3].focus();
@@ -98,7 +85,6 @@ const Signup = () => {
         <PasswordInput getPasswordValue={getPasswordValue} />
         <CheckPasswordInput passwordValue={passwordValue} />
         <NickNameInput inputRef={nickNameRef} />
-        <PhoneInput />
         <button className="button" type="submit">
           가입하기
         </button>

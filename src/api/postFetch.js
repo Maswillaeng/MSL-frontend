@@ -52,7 +52,6 @@ export const updatePostFetch = async (
         category: categoryId,
       }),
     });
-    console.log(response);
     if (response.ok) {
       //
     } else {
@@ -113,10 +112,10 @@ export const changeImgFormat = async (imageObject) => {
     const response = await fetch(`${BASE_URL}/api/changeFormatImage`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
       credentials: "include",
-      body: JSON.stringify({ imageObject }),
+      body: imageObject,
     });
     if (response.ok) {
       return await response.json();

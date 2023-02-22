@@ -17,12 +17,15 @@ const PostContent = ({
   };
 
   const uploadImageCallBack = async (file) => {
+    const formData = new FormData();
+
+    formData.append("photo", file);
     const imageObject = {
       file: file,
       localSrc: URL.createObjectURL(file),
     };
-    console.log(imageObject);
-    const data = await changeImgFormat(imageObject);
+    console.log(formData);
+    const data = await changeImgFormat(formData);
     uploadImages.push(data);
     getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {

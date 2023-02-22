@@ -6,7 +6,6 @@ const SignInputContext = createContext({
   updatePasswordInfo: () => {},
   updateCheckPasswordInfo: () => {},
   updateNickNameInfo: () => {},
-  updatePhoneInfo: () => {},
 });
 
 const validReducer = (state, { type, val }) => {
@@ -29,10 +28,6 @@ const validReducer = (state, { type, val }) => {
       copyState.nickNameInfo.isValid = val.valid;
       copyState.nickNameInfo.error = val.error;
       return copyState;
-    case "PHONE_CHECK":
-      copyState.phoneInfo.isValid = val.valid;
-      copyState.phoneInfo.error = val.error;
-      return copyState;
     default:
       return null;
   }
@@ -44,7 +39,6 @@ export const SignInputProvider = (props) => {
     passwordInfo: { isValid: false, error: false },
     checkPasswordInfo: { isValid: false, error: false },
     nickNameInfo: { isValid: false, error: false },
-    phoneInfo: { isValid: false, error: true },
   });
 
   const updateEmailInfo = (valid, error) => {
@@ -74,13 +68,6 @@ export const SignInputProvider = (props) => {
       val: { valid, error },
     });
   };
-
-  const updatePhoneInfo = (valid, error) => {
-    dispatchIsValid({
-      type: "PHONE_CHECK",
-      val: { valid, error },
-    });
-  };
   return (
     <SignInputContext.Provider
       value={{
@@ -89,7 +76,6 @@ export const SignInputProvider = (props) => {
         updatePasswordInfo,
         updateCheckPasswordInfo,
         updateNickNameInfo,
-        updatePhoneInfo,
       }}
     >
       {props.children}

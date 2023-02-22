@@ -9,6 +9,7 @@ import Signup from "../pages/Signup";
 import Root from "../Root";
 import NotFound from "../pages/NotFound";
 import AuthTest from "../Components/AuthTest";
+import Admin from "../pages/Admin";
 
 const onlyLogin = "ONLY_LOGIN";
 const onlyLogout = "ONLY_LOGOUT";
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
         path: "users/:userId",
         element: AuthTest(MyPage, null),
       },
+      { path: "admin", element: <Admin /> },
     ],
     errorElement: <NotFound />,
   },
