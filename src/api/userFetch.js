@@ -1,4 +1,5 @@
 import basicProfile from "../assets/basic_profile.jpg";
+import { updateToken } from "./updateToken";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -51,9 +52,14 @@ export const userSignFetch = async (
 };
 
 export const getUserInfoFetch = async () => {
-  return await fetch(`${BASE_URL}/api/user`, {
+  const response = await fetch(`${BASE_URL}/api/user`, {
     credentials: "include",
   });
+  if (response.status === 401) {
+    return await updateToken("/api/user", { credentials: "include" });
+  } else if (response.ok) {
+    return response;
+  }
 };
 
 export const getSomeoneUserInfoFetch = async (userId) => {
@@ -64,12 +70,16 @@ export const getSomeoneUserInfoFetch = async (userId) => {
   } catch (error) {}
 };
 
-export const userPostListFetch = async (category, userId) => {
+export const userPostListFetch = async (category, userId, offset) => {
   try {
     const response = await fetch(
       `${BASE_URL}/api/userPostList?userId=${userId}${
         category && `&?category=${category}`
-      }`
+      }`,
+      {
+        body: JSON.stringify({ offset }),
+        headers: { "Content-Type": "application/json" },
+      }
     );
     if (response.ok) {
       return await response.json();

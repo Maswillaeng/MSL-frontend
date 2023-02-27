@@ -3,6 +3,11 @@ import { createContext, useReducer } from "react";
 const PostContext = createContext({
   postInfo: {},
   getPostInfo: () => {},
+  updateLikeInfo: () => {},
+  updateCommentList: () => {},
+  updateCommentContent: () => {},
+  deleteComment: () => {},
+  updateCommentLikeInfo: () => {},
 });
 
 const postInfoReducer = (state, { type, val }) => {
@@ -10,6 +15,38 @@ const postInfoReducer = (state, { type, val }) => {
   switch (type) {
     case "UPDATE_POST":
       copyState = val;
+      return copyState;
+    case "UPDATE_LIKE":
+      copyState.likeNumber = val.likeNumber;
+      copyState.liked = val.isLiked;
+      return copyState;
+    case "UPDATE_COMMENT_LIKE":
+      const newLikeArray = copyState.commentList.map((ele) => {
+        if (ele.commentId === val.commentId) {
+          ele.like = val.likeNumber;
+          ele.liked = val.isLiked;
+        }
+        return ele;
+      });
+      copyState.commentList = [...newLikeArray];
+      return copyState;
+    case "UPDATE_COMMENT_LIST":
+      copyState.commentList = val;
+      return copyState;
+    case "UPDATE_COMMENT_CONTENT":
+      const newArray = copyState.commentList.map((ele) => {
+        if (ele.commentId === val.commentId) {
+          ele.content = val.value;
+        }
+        return ele;
+      });
+      copyState.commentList = [...newArray];
+      return copyState;
+    case "DELETE_COMMENT":
+      const findIndex = copyState.commentList.findIndex(
+        (ele) => ele.commentId === val
+      );
+      copyState.commentList.splice(findIndex, 1);
       return copyState;
     default:
       return null;
@@ -26,11 +63,50 @@ export const PostProvider = (props) => {
     });
   };
 
+  const updateLikeInfo = (likeNumber, isLiked) => {
+    dispatchPostInfo({
+      type: "UPDATE_LIKE",
+      val: { likeNumber, isLiked },
+    });
+  };
+
+  const updateCommentLikeInfo = (likeNumber, isLiked, commentId) => {
+    dispatchPostInfo({
+      type: "UPDATE_COMMENT_LIKE",
+      val: { likeNumber, isLiked, commentId },
+    });
+  };
+
+  const updateCommentList = (commentList) => {
+    dispatchPostInfo({
+      type: "UPDATE_COMMENT_LIST",
+      val: commentList,
+    });
+  };
+
+  const updateCommentContent = (commentId, value) => {
+    dispatchPostInfo({
+      type: "UPDATE_COMMENT_CONTENT",
+      val: { value, commentId },
+    });
+  };
+
+  const deleteComment = (commentId) => {
+    dispatchPostInfo({
+      type: "DELETE_COMMENT",
+      val: commentId,
+    });
+  };
   return (
     <PostContext.Provider
       value={{
         getPostInfo,
         postInfo,
+        updateLikeInfo,
+        updateCommentList,
+        updateCommentContent,
+        deleteComment,
+        updateCommentLikeInfo,
       }}
     >
       {props.children}

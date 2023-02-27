@@ -3,10 +3,13 @@ import { changeDateFormat, formatNumber } from "../utility/chage-format";
 import LazyImage from "./LazyImage";
 import basicProfile from "../assets/basic_profile.jpg";
 
-const Card = ({ ele }) => {
+const Card = ({ ele, lastCardRef }) => {
   const { pathname } = useLocation();
   return (
-    <div className="flex flex-col rounded-[10px] bg-main relative h-[280px] duration-500 text-sub hover:-translate-y-4 hover:duration-500 hover:ease-in-out">
+    <div
+      ref={lastCardRef}
+      className="flex flex-col rounded-[10px] bg-main relative h-[280px] duration-500 text-sub hover:-translate-y-4 hover:duration-500 hover:ease-in-out"
+    >
       <div className="w-full h-[150px]">
         <Link to={`/post/detail/${ele.postId}`}>
           <LazyImage

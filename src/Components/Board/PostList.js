@@ -1,25 +1,26 @@
-import { useEffect, useState } from "react";
-import { getPostListFetch } from "../../api/postFetch";
 import Loading from "../Loading";
 import styled from "styled-components";
 import Card from "../Card";
+import useFetch from "../../hooks/useFetch";
 
 const PostList = ({ category }) => {
-  const [post, setPost] = useState([]);
-  const [isLodding, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const getPostListData = async () => {
-      setIsLoading(true);
-      const data = await getPostListFetch(category);
-      setPost(data?.data);
-      setIsLoading(false);
-    };
-    getPostListData();
-  }, [category]);
+  const url = `${process.env.REACT_APP_BASE_URL}/api/post${
+    category ? `?category=${category}` : ""
+  }`;
+  const [{ data: post }, isLoading, error] = useFetch("GET", url, {});
+  console.log(url);
+  // useEffect(() => {
+  //   const getPostListData = async () => {
+  //     setIsLoading(true);
+  //     const data = await getPostListFetch(category);
+  //     setPost(data?.data);
+  //     setIsLoading(false);
+  //   };
+  //   getPostListData();
+  // }, [category]);
   return (
     <>
-      {isLodding ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <>

@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createCommentFetch, getPostDetailFetch } from "../../api/postFetch";
-import basicProfile from "../../assets/basic_profile.jpg";
+import basicProfile from "../../assets/basic_thumbnail.png";
 import PostContext from "../../context/post-context";
 import UserContext from "../../context/user-context";
 import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
@@ -19,14 +19,16 @@ const menuList = [
   { id: "newest", text: "최신순" },
 ];
 
-const PostComment = () => {
-  const { isLoggedIn, userInfo } = useContext(UserContext);
-  const { getPostInfo, postInfo } = useContext(PostContext);
+const PostComment = ({ comments }) => {
+  const {
+    isLoggedIn,
+    userInfo: { userImage },
+  } = useContext(UserContext);
+  const { getPostInfo, updateCommentList } = useContext(PostContext);
   const navigation = useNavigate();
   const { postId } = useParams();
   const dropDownRef = useRef(null);
   const commentRef = useRef(null);
-  const [comments, setComments] = useState(postInfo?.commentList);
   const [isLoading, setIsLoading] = useState(false);
   const [commentSortId, setCommentSortId] = useState(
     localStorage.getItem("sortId") ?? "popularity"
@@ -40,17 +42,17 @@ const PostComment = () => {
     setIsLoading(true);
     try {
       const response = await createCommentFetch(value);
+
       if (response.ok) {
         const { data } = await getPostDetailFetch(postId);
-
         getPostInfo(data);
-        setIsLoading(false);
       } else {
         throw new Error("서버 에러");
       }
     } catch (error) {
       console.error(error.message);
     }
+    setIsLoading(false);
   };
 
   const changeSort = (e) => {
@@ -69,14 +71,14 @@ const PostComment = () => {
     let sortedCommentList = [...comments];
     if (commentSortId === "newest") {
       sortedCommentList.sort((a, b) => {
-        const aDate = changeDateToSeconds(a.createdAt);
-        const bDate = changeDateToSeconds(b.createdAt);
+        const aDate = changeDateToSeconds(a.createAt);
+        const bDate = changeDateToSeconds(b.createAt);
         return bDate - aDate;
       });
     } else {
       sortedCommentList.sort((a, b) => b.like - a.like);
     }
-    setComments(sortedCommentList);
+    updateCommentList(sortedCommentList);
   }, [commentSortId]);
   return (
     <div className="w-full mt-10">
@@ -117,7 +119,7 @@ const PostComment = () => {
             <img
               className="max-w-[40px] max-h-[40px] min-w-[40px] min-h-[40px] mr-2 rounded-full"
               alt="사용자 프로필 이미지"
-              src={userInfo.userImage || basicProfile}
+              src={userImage || basicProfile}
             />
             <textarea
               ref={commentRef}
@@ -137,9 +139,9 @@ const PostComment = () => {
         {comments?.map((ele) => (
           <CommentList
             key={ele.commentId}
-            ele={ele}
+            element={ele}
             basicProfile={basicProfile}
-            commentUserId={postInfo.userId}
+            comments={comments}
           />
         ))}
       </ul>

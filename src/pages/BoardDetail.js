@@ -22,6 +22,7 @@ const BoardDetail = () => {
     const getPostDetailData = async () => {
       setIsLoading(true);
       const { data } = await getPostDetailFetch(postId);
+      console.log(data);
       setIsLoading(false);
       getPostInfo(data);
     };
@@ -30,7 +31,7 @@ const BoardDetail = () => {
   return (
     <>
       <Header />
-      {postInfo.nickName && (
+      {postInfo?.nickName && (
         <div className="mt-14 mx-[20%] min-w-[900px] text-main pb-10">
           <PostHead
             postUserNickName={postInfo?.nickName}
@@ -42,11 +43,14 @@ const BoardDetail = () => {
             postUserId={postInfo.userId}
           />
           <PostMain title={postInfo?.title} content={postInfo?.content} />
-          <PostComment />
+          <PostComment
+            comments={postInfo?.commentList}
+            userId={postInfo?.userId}
+          />
           <PostSide
             postId={postInfo?.postId}
             likeNumber={postInfo?.likeNumber}
-            isLiked={postInfo?.isLiked}
+            isLiked={postInfo?.liked}
           />
         </div>
       )}

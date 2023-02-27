@@ -3,17 +3,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { useRef } from "react";
 import { updateLikeNumberFetch } from "../../api/postFetch";
+import PostContext from "../../context/post-context";
 import UserContext from "../../context/user-context";
 import useToggleLike from "../../hooks/useToggleLike";
 
 const PostSide = ({ likeNumber, isLiked, postId }) => {
   const { isLoggedIn } = useContext(UserContext);
-  const { isLike, likeCount, toggleLike } = useToggleLike(
+  const { updateLikeInfo } = useContext(PostContext);
+  const { toggleLike } = useToggleLike(
     isLoggedIn,
     likeNumber,
     isLiked,
     updateLikeNumberFetch,
-    postId
+    postId,
+    updateLikeInfo
   );
   const copyUrlListRef = useRef(null);
 
@@ -44,14 +47,14 @@ const PostSide = ({ likeNumber, isLiked, postId }) => {
         <button
           onClick={toggleLikeHandler}
           className={`circle-button  ${
-            isLike ? "bg-main text-white" : "bg-white text-main"
+            isLiked ? "bg-main text-white" : "bg-white text-main"
           } ${
             isLoggedIn && "active:scale-125 active:duration-200"
           } duration-300 scale-100`}
         >
           <FontAwesomeIcon icon={faHeart} />
         </button>
-        <span>{likeCount}</span>
+        <span>{likeNumber}</span>
       </li>
       <li>
         <button

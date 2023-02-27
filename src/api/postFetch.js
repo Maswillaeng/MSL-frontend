@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const createPostFetch = async (
   nickName,
@@ -127,20 +127,19 @@ export const changeImgFormat = async (imageObject) => {
   }
 };
 
-export const updateLikeNumberFetch = async (postId) => {
+export const updateLikeNumberFetch = async (postId, method) => {
   return await fetch(`${BASE_URL}/api/post-like/${postId}`, {
-    method: "POST",
+    method,
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    // body: JSON.stringify(sendLikeValue),
   });
 };
 
-export const updateCommentLikeNumberFetch = async (commentId) => {
+export const updateCommentLikeNumberFetch = async (commentId, method) => {
   return await fetch(`${BASE_URL}/api/comment-like/${commentId}`, {
-    method: "POST",
+    method,
     headers: {
       "Content-Type": "application/json",
     },
@@ -156,5 +155,26 @@ export const createCommentFetch = async (value) => {
     },
     credentials: "include",
     body: JSON.stringify({ postId: 4, content: value }),
+  });
+};
+
+export const deleteCommentFetch = async (commentId) => {
+  return await fetch(`${BASE_URL}/api/comment/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+};
+
+export const editCommentFetch = async (value, commentId) => {
+  return await fetch(`${BASE_URL}/api/comment`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ commentId: commentId, content: value }),
+    credentials: "include",
   });
 };

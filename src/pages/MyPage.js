@@ -1,12 +1,12 @@
 import Header from "../Components/Header";
-import { useContext, useEffect } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import EditProfileModal from "../Components/MyPage/EditProfileModal";
 import UserContext from "../context/user-context";
 import UserIntroduction from "../Components/MyPage/UserIntroduction";
 import Category from "../Components/UI/Category";
 import Loading from "../Components/Loading";
-import basicImage from "../assets/basic_profile.jpg";
+import basicImage from "../assets/basic_thumbnail.png";
+import { createPortal } from "react-dom";
 import {
   getSomeoneUserInfoFetch,
   getUserInfoFetch,
@@ -33,6 +33,7 @@ const categoryList = [
 const MyPage = () => {
   const { userInfo } = useContext(UserContext);
   const { introduction, nickName, userImage } = userInfo;
+  const lastCardRef = useRef(null);
   const { userId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
@@ -55,27 +56,42 @@ const MyPage = () => {
   const { category, changeCurrentCategory } = useCategory("myCategory");
 
   useEffect(() => {
-    const userPostListData = async () => {
-      setIsLoading(true);
-      const { data } = await userPostListFetch(category);
-      console.log(data);
-      setPostList(data);
-      setIsLoading(false);
-    };
-    userPostListData();
-  }, [category]);
-
-  useEffect(() => {
     const someoneInfoData = async () => {
       setIsLoading(true);
       const data = await getSomeoneUserInfoFetch(userId);
-      console.log(data);
       setSomeoneInfo(data);
       setIsLoading(false);
     };
     someoneInfoData();
   }, [userId]);
 
+  useEffect(() => {
+    let observer;
+    if (lastCardRef) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            getUserPostList();
+          }
+        },
+        {
+          threshold: 1,
+        }
+      );
+      observer.observe(lastCardRef.current);
+    }
+    return () => observer && observer.disconnect(lastCardRef);
+  });
+
+  const getUserPostList = async () => {
+    const offset = postList.length + 20;
+    setIsLoading(true);
+    const { data } = await userPostListFetch(category, userId, offset);
+    setPostList((prevList) => {
+      return [...prevList, ...data];
+    });
+    setIsLoading(false);
+  };
   return (
     <>
       <Header />
@@ -96,23 +112,36 @@ const MyPage = () => {
           />
           <div className="mt-7">
             <Grid>
-              {postList?.map((ele) => (
-                <Card key={ele.postId} ele={ele} />
-              ))}
+              {postList?.map((ele, index) => {
+                if (postList.length - 1 === index) {
+                  return (
+                    <Card
+                      lastCardRef={lastCardRef}
+                      key={ele.postId}
+                      ele={ele}
+                    />
+                  );
+                } else {
+                  return <Card key={ele.postId} ele={ele} />;
+                }
+              })}
             </Grid>
           </div>
         </div>
       )}
-      {modal ? (
-        <EditProfileModal
-          userImage={userImage}
-          introduction={introduction}
-          nickName={nickName}
-          setModal={setModal}
-          modal={modal}
-          userId={userId}
-        />
-      ) : null}
+      {modal
+        ? createPortal(
+            <EditProfileModal
+              userImage={userImage}
+              introduction={introduction}
+              nickName={nickName}
+              setModal={setModal}
+              modal={modal}
+              userId={userId}
+            />,
+            document.getElementById("modal")
+          )
+        : null}
     </>
   );
 };

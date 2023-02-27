@@ -61,6 +61,7 @@ const EditProfileModal = ({
 
     reader.onload = (e) => {
       setEditUserImage(e.target.result);
+      console.log(e.target.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
@@ -97,7 +98,7 @@ const EditProfileModal = ({
             setModal(false);
           }
         }}
-        className="flex justify-center items-center  bg-[rgba(0,0,0,0.3)] absolute top-0 w-full h-full"
+        className="flex justify-center items-center  bg-[rgba(0,0,0,0.3)] absolute top-0 left-0 w-full h-full z-50"
       >
         <div className="modal relative flex flex-col items-center w-[400px] h-[350px] bg-main rounded-[10px]">
           <h1 className="text-sub text-3xl font-bold mt-5">프로필 수정</h1>
