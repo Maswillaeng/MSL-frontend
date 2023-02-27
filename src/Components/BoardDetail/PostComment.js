@@ -41,7 +41,7 @@ const PostComment = ({ comments }) => {
 
     setIsLoading(true);
     try {
-      const response = await createCommentFetch(value);
+      const response = await createCommentFetch(postId, value);
 
       if (response.ok) {
         const { data } = await getPostDetailFetch(postId);

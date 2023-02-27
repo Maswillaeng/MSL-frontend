@@ -147,14 +147,14 @@ export const updateCommentLikeNumberFetch = async (commentId, method) => {
   });
 };
 
-export const createCommentFetch = async (value) => {
+export const createCommentFetch = async (postId, value) => {
   return await fetch(`${BASE_URL}/api/comment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ postId: 4, content: value }),
+    body: JSON.stringify({ postId, content: value }),
   });
 };
 
