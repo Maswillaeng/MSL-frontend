@@ -108,12 +108,10 @@ export const getPostListFetch = async (category) => {
 };
 
 export const changeImgFormat = async (imageObject) => {
+  console.log("hi");
   try {
     const response = await fetch(`${BASE_URL}/api/changeFormatImage`, {
       method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
       credentials: "include",
       body: imageObject,
     });

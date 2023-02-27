@@ -45,6 +45,7 @@ const EditProfileModal = ({
     const { value } = nickNameRef.current;
     try {
       const response = await checkNickNameOverlapFetch(value);
+      console.log(response);
       if (response.ok) {
         updateNickNameInfo(true, false);
       } else {
@@ -71,6 +72,7 @@ const EditProfileModal = ({
     if (!isValid) return;
     const { value: editNickName } = nickNameRef?.current;
     const { value: editIntroduction } = introductionRef?.current;
+    console.log(editNickName, editIntroduction);
 
     setIsLoading(true);
     try {
@@ -145,6 +147,7 @@ const EditProfileModal = ({
                 {error && <p className="text-sm text-sub">{errorMessage}</p>}
               </label>
               <textarea
+                ref={introductionRef}
                 defaultValue={introduction}
                 placeholder="소개 글"
                 type="text"

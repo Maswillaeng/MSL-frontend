@@ -64,29 +64,31 @@ export const getUserInfoFetch = async () => {
 
 export const getSomeoneUserInfoFetch = async (userId) => {
   try {
-    return await fetch(`${BASE_URL}/api/userInfo/${userId}`, {
+    const response = await fetch(`${BASE_URL}/api/userInfo/${userId}`, {
       credentials: "include",
     });
+    if (response.ok) {
+      return await response.json();
+    }
   } catch (error) {}
 };
 
 export const userPostListFetch = async (category, userId, offset) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/api/userPostList?userId=${userId}${
-        category && `&?category=${category}`
-      }`,
-      {
-        body: JSON.stringify({ offset }),
-        headers: { "Content-Type": "application/json" },
-      }
+      `${BASE_URL}/api/post/user?userId=${userId}${
+        category && `&category=${category}`
+      }&offset=${offset}`,
+      { credentials: "include" }
     );
     if (response.ok) {
       return await response.json();
     } else {
       throw new Error("notFound");
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 export const editProfileFetch = async (

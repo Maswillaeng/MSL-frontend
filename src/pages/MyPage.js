@@ -37,17 +37,7 @@ const MyPage = () => {
   const { userId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
-  const [postList, setPostList] = useState([
-    {
-      postId: 12,
-      title: "칵테일 레시피",
-      createdAt: "2023-02-08T18:07:17.788471",
-      thumbNail: basicImage,
-      hits: 15,
-      commentCnt: 20,
-      likeCnt: 150,
-    },
-  ]);
+  const [postList, setPostList] = useState([]);
   const [someoneInfo, setSomeoneInfo] = useState({
     nickName: "정채운",
     introduction: "안녕하세요 저는 칵테일을 좋아합니다.",
@@ -59,6 +49,7 @@ const MyPage = () => {
     const someoneInfoData = async () => {
       setIsLoading(true);
       const data = await getSomeoneUserInfoFetch(userId);
+      console.log(data);
       setSomeoneInfo(data);
       setIsLoading(false);
     };
@@ -66,8 +57,15 @@ const MyPage = () => {
   }, [userId]);
 
   useEffect(() => {
+    const firstGetPostListData = async () => {
+      await getUserPostList();
+    };
+    firstGetPostListData();
+  }, []);
+
+  useEffect(() => {
     let observer;
-    if (lastCardRef) {
+    if (lastCardRef.current) {
       observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -81,14 +79,15 @@ const MyPage = () => {
       observer.observe(lastCardRef.current);
     }
     return () => observer && observer.disconnect(lastCardRef);
-  });
+  }, []);
 
   const getUserPostList = async () => {
     const offset = postList.length + 20;
     setIsLoading(true);
-    const { data } = await userPostListFetch(category, userId, offset);
+    const data = await userPostListFetch(category, userId, offset);
+    console.log(data);
     setPostList((prevList) => {
-      return [...prevList, ...data];
+      return [...prevList, ...data.postList];
     });
     setIsLoading(false);
   };
