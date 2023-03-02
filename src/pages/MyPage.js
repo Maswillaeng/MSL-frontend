@@ -32,12 +32,13 @@ const categoryList = [
 ];
 
 const postListReducer = (state, { type, val }) => {
+  console.log(val);
   const copyState = JSON.parse(JSON.stringify(state));
   switch (type) {
     case "POST_LIST_UPDATE":
       const offset = copyState[`${val.category}PostList`].offset;
       const prevList = [...copyState[`${val.category}PostList`].postList];
-      if (prevList.length === offset + val.postList.length - 20)
+      if (prevList?.length === offset + val.postList?.length - 20)
         return copyState;
       copyState[`${val.category}PostList`].postCnt = val?.totalElements;
       copyState[`${val.category}PostList`].postList = [
@@ -132,10 +133,15 @@ const MyPage = () => {
 
   const getUserPostList = async (category, userId, offset) => {
     setIsLoading(true);
-    const data = await userPostListFetch(category, userId, offset);
+    const { data } = await userPostListFetch(category, userId, offset);
+    console.log(data);
     dispatchPostList({
       type: "POST_LIST_UPDATE",
-      val: { postList: data.postList, category, totalElements: 22 },
+      val: {
+        postList: data.content,
+        category,
+        totalElements: data.totalElements,
+      },
     });
     setIsLoading(false);
   };

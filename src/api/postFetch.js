@@ -82,7 +82,9 @@ export const deletePostFetch = async (postId) => {
 
 export const getPostDetailFetch = async (postId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/post/${postId}`);
+    const response = await fetch(`${BASE_URL}/api/post/${postId}`, {
+      credentials: "include",
+    });
     if (response.ok) {
       return await response.json();
     } else {
@@ -120,6 +122,7 @@ export const changeImgFormat = async (imageObject) => {
       body: imageObject,
     });
     if (response.ok) {
+      console.log(response);
       return await response.json();
     } else {
       throw new Error("변환 되지 않았습니다.");

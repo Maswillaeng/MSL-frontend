@@ -54,7 +54,7 @@ const BoardDetail = () => {
           <PostSide
             postId={postInfo?.postId}
             likeNumber={postInfo?.likeNumber}
-            isLiked={postInfo?.liked}
+            isLiked={postInfo?.isLiked}
           />
         </div>
       )}

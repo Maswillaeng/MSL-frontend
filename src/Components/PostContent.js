@@ -21,13 +21,14 @@ const PostContent = ({
     formData.append("photo", file);
 
     const data = await changeImgFormat(formData);
+    console.log(data);
     uploadImages.push(data);
 
     getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {
       resolve({
         data: {
-          link: data.imgSrc,
+          link: `http://localhost:8080${data.path}`,
         },
       });
       reject(console.error("에러"));
