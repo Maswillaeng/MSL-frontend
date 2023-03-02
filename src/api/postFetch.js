@@ -4,7 +4,9 @@ export const createPostFetch = async (
   nickName,
   title,
   editorToHtml,
-  category
+  category,
+  thumbnail,
+  tagList
 ) => {
   try {
     const response = await fetch(`${BASE_URL}/api/post`, {
@@ -18,6 +20,8 @@ export const createPostFetch = async (
         title,
         content: editorToHtml,
         category,
+        thumbnail,
+        hashTagList: tagList,
       }),
     });
     if (response.ok) {

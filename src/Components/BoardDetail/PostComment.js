@@ -1,15 +1,14 @@
 import { useContext, useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { createCommentFetch, getPostDetailFetch } from "../../api/postFetch";
 import basicProfile from "../../assets/basic_thumbnail.png";
 import PostContext from "../../context/post-context";
-import UserContext from "../../context/user-context";
 import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
 import { changeDateToSeconds } from "../../utility/chage-format";
-import Loading from "../Loading";
 import DropDown from "../UI/DropDown";
+import AddComment from "./AddComment";
 import CommentList from "./CommentList";
 
 const openButtonText = "<span>정렬기준</span>";
@@ -20,50 +19,32 @@ const menuList = [
 ];
 
 const PostComment = ({ comments }) => {
-  const {
-    isLoggedIn,
-    userInfo: { userImage },
-  } = useContext(UserContext);
-  const { getPostInfo, updateCommentList } = useContext(PostContext);
-  const navigation = useNavigate();
-  const { postId } = useParams();
+  const { updateCommentList, getPostInfo } = useContext(PostContext);
   const dropDownRef = useRef(null);
-  const commentRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [commentSortId, setCommentSortId] = useState(
     localStorage.getItem("sortId") ?? "popularity"
   );
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
-
-  const submitComment = async (e) => {
-    e.preventDefault();
-    const { value } = commentRef?.current;
-
-    setIsLoading(true);
-    try {
-      const response = await createCommentFetch(postId, value);
-
-      if (response.ok) {
-        const { data } = await getPostDetailFetch(postId);
-        getPostInfo(data);
-      } else {
-        throw new Error("서버 에러");
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-    setIsLoading(false);
-  };
+  const { postId } = useParams();
 
   const changeSort = (e) => {
     setCommentSortId(e.target.id);
     localStorage.setItem("sortId", e.target.id);
   };
 
-  const checkUserLoginState = (e) => {
-    const { id } = e.target;
-    if (!isLoggedIn && (id === "comment" || id === "addCommentButton")) {
-      navigation("/login");
+  const submitCommentFn = async (value) => {
+    try {
+      const response = await createCommentFetch(postId, value);
+
+      if (response.ok) {
+        const { data } = await getPostDetailFetch(postId);
+        console.log(data);
+        getPostInfo(data);
+      } else {
+        throw new Error("서버 에러");
+      }
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -82,7 +63,8 @@ const PostComment = ({ comments }) => {
   }, [commentSortId]);
   return (
     <div className="w-full mt-10">
-      <div className="flex">
+      <div className="flex gap-5 mb-10">
+        <span>댓글 {comments.length}개</span>
         <label className="relative">
           <DropDown
             openButtonText={openButtonText}
@@ -107,34 +89,7 @@ const PostComment = ({ comments }) => {
           ) : null}
         </label>
       </div>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <form
-          onClick={checkUserLoginState}
-          className="flex flex-col justify-between mt-10"
-          onSubmit={submitComment}
-        >
-          <div className="flex">
-            <img
-              className="max-w-[40px] max-h-[40px] min-w-[40px] min-h-[40px] mr-2 rounded-full"
-              alt="사용자 프로필 이미지"
-              src={userImage || basicProfile}
-            />
-            <textarea
-              ref={commentRef}
-              id="comment"
-              className="border-b-2 border-main outline-none resize-none w-full h-auto overflow-auto"
-              placeholder="댓글 입력"
-            ></textarea>
-          </div>
-          <div className="self-end m-5">
-            <button id="addCommentButton" type="submit" className="button">
-              등록
-            </button>
-          </div>
-        </form>
-      )}
+      <AddComment submitCommentFn={submitCommentFn} />
       <ul className="w-full">
         {comments?.map((ele) => (
           <CommentList

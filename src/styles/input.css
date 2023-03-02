@@ -16,3 +16,7 @@
 .pointer {
   @apply my-2 cursor-pointer hover:bg-red-200;
 }
+
+.hashtag {
+  @apply bg-main rounded-[50px] px-3 text-sub cursor-pointer;
+}

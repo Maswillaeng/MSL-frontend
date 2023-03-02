@@ -63,6 +63,7 @@ export const getUserInfoFetch = async () => {
 };
 
 export const getSomeoneUserInfoFetch = async (userId) => {
+  console.log(userId);
   try {
     const response = await fetch(`${BASE_URL}/api/userInfo/${userId}`, {
       credentials: "include",

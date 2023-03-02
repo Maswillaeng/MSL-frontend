@@ -8,16 +8,7 @@ const PostList = ({ category }) => {
     category ? `?category=${category}` : ""
   }`;
   const [{ data: post }, isLoading, error] = useFetch("GET", url, {});
-  console.log(url);
-  // useEffect(() => {
-  //   const getPostListData = async () => {
-  //     setIsLoading(true);
-  //     const data = await getPostListFetch(category);
-  //     setPost(data?.data);
-  //     setIsLoading(false);
-  //   };
-  //   getPostListData();
-  // }, [category]);
+
   return (
     <>
       {isLoading ? (

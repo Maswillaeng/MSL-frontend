@@ -42,7 +42,11 @@ const BoardDetail = () => {
             userInfo={userInfo}
             postUserId={postInfo.userId}
           />
-          <PostMain title={postInfo?.title} content={postInfo?.content} />
+          <PostMain
+            tagList={postInfo?.hashTagList}
+            title={postInfo?.title}
+            content={postInfo?.content}
+          />
           <PostComment
             comments={postInfo?.commentList}
             userId={postInfo?.userId}

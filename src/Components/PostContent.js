@@ -30,7 +30,7 @@ const PostContent = ({
           link: data.imgSrc,
         },
       });
-      reject(console.log("hi"));
+      reject(console.error("에러"));
     });
   };
 

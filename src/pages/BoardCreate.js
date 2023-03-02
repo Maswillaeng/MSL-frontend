@@ -12,6 +12,7 @@ import UserContext from "../context/user-context";
 import PostFooter from "../Components/PostFooter";
 import PostContent from "../Components/PostContent";
 import PostTitle from "../Components/PostTitle";
+import PostOption from "../Components/UI/PostOption";
 
 const BoardCreate = () => {
   const { userInfo } = useContext(UserContext);
@@ -21,6 +22,7 @@ const BoardCreate = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isLoading, setIsLoading] = useState(false);
   const [thumbnail, setThumbnail] = useState("");
+  const [tagList, setTagList] = useState([]);
 
   const getUploadImageArray = (imageArray) => {
     if (imageArray.length > 0) {
@@ -48,12 +50,13 @@ const BoardCreate = () => {
       title,
       editorToHtml,
       categoryId,
-      thumbnail
+      thumbnail,
+      tagList
     );
     setIsLoading(false);
     localStorage.removeItem("createTitle");
     localStorage.removeItem("createContent");
-    navigation(`/users/${userInfo.nickName}`);
+    navigation(`/users/${userInfo.userId}`);
   };
 
   useEffect(() => {
@@ -83,12 +86,18 @@ const BoardCreate = () => {
     <>
       <Header />
       <div className={`pt-5 min-w-[1000px]  mx-20 flex justify-center`}>
-        <form className="flex flex-col w-7/12" onSubmit={submitPostData}>
+        <div className="flex flex-col w-7/12" onSubmit={submitPostData}>
           <div>
             <PostTitle
               title={title}
               setTitle={setTitle}
               localStorageKey="createTitle"
+            />
+            <PostOption
+              tagList={tagList}
+              setTagList={setTagList}
+              categoryId={categoryId}
+              setCategoryId={setCategoryId}
             />
             <PostContent
               editorState={editorState}
@@ -98,8 +107,8 @@ const BoardCreate = () => {
               localStorageKey="createContent"
             />
           </div>
-          <PostFooter categoryId={categoryId} setCategoryId={setCategoryId} />
-        </form>
+          <PostFooter submitPost={submitPostData} />
+        </div>
       </div>
       {isLoading ? <Loading /> : null}
     </>

@@ -22,6 +22,7 @@ import useCategory from "../hooks/useCategory";
 import Card from "../Components/Card";
 import { GridCard } from "../Components/Board/PostList";
 import styled from "styled-components";
+import { useReducer } from "react";
 
 const categoryList = [
   { id: "", category: "전체" },
@@ -30,6 +31,28 @@ const categoryList = [
   { id: "FREE", category: "자유" },
 ];
 
+const postListReducer = (state, { type, val }) => {
+  const copyState = JSON.parse(JSON.stringify(state));
+  switch (type) {
+    case "POST_LIST_UPDATE":
+      const offset = copyState[`${val.category}PostList`].offset;
+      const prevList = [...copyState[`${val.category}PostList`].postList];
+      if (prevList.length === offset + val.postList.length - 20)
+        return copyState;
+      copyState[`${val.category}PostList`].postCnt = val?.totalElements;
+      copyState[`${val.category}PostList`].postList = [
+        ...prevList,
+        ...val.postList,
+      ];
+      return copyState;
+    case "UPDATE_OFFSET":
+      copyState[`${val.category}PostList`].offset = val.offset;
+      return copyState;
+    default:
+      return null;
+  }
+};
+
 const MyPage = () => {
   const { userInfo } = useContext(UserContext);
   const { introduction, nickName, userImage } = userInfo;
@@ -37,13 +60,33 @@ const MyPage = () => {
   const { userId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
-  const [postList, setPostList] = useState([]);
-  const [someoneInfo, setSomeoneInfo] = useState({
-    nickName: "정채운",
-    introduction: "안녕하세요 저는 칵테일을 좋아합니다.",
-    userImage: basicImage,
+  const [postListObj, dispatchPostList] = useReducer(postListReducer, {
+    PostList: {
+      offset: 20,
+      postCnt: 0,
+      postList: [],
+    },
+    RECIPEPostList: {
+      offset: 20,
+      postCnt: 0,
+      postList: [],
+    },
+    BAR_SNACKPostList: {
+      offset: 20,
+      postCnt: 0,
+      postList: [],
+    },
+    FREEPostList: {
+      offset: 20,
+      postCnt: 0,
+      postList: [],
+    },
   });
+  const [totalPostNumber, setTotalPostNumber] = useState(1);
+  const [someoneInfo, setSomeoneInfo] = useState({});
   const { category, changeCurrentCategory } = useCategory("myCategory");
+  const postList = postListObj[`${category}PostList`].postList;
+  const offset = postListObj[`${category}PostList`].offset;
 
   useEffect(() => {
     const someoneInfoData = async () => {
@@ -58,76 +101,76 @@ const MyPage = () => {
 
   useEffect(() => {
     const firstGetPostListData = async () => {
-      await getUserPostList();
+      await getUserPostList(category, userId, offset);
     };
     firstGetPostListData();
-  }, []);
+  }, [category, userId, offset]);
 
   useEffect(() => {
+    if (totalPostNumber === postList.length) return;
+
     let observer;
     if (lastCardRef.current) {
       observer = new IntersectionObserver(
-        ([entry]) => {
+        async ([entry]) => {
           if (entry.isIntersecting) {
-            getUserPostList();
+            dispatchPostList({
+              type: "UPDATE_OFFSET",
+              val: { offset: offset + 20, category },
+            });
           }
         },
         {
-          threshold: 1,
+          threshold: 0.1,
         }
       );
       observer.observe(lastCardRef.current);
     }
-    return () => observer && observer.disconnect(lastCardRef);
-  }, []);
+    return () => observer && observer.disconnect();
+  });
+  //카테고리가 바뀌면 오프셋도 초기화
 
-  const getUserPostList = async () => {
-    const offset = postList.length + 20;
+  const getUserPostList = async (category, userId, offset) => {
     setIsLoading(true);
     const data = await userPostListFetch(category, userId, offset);
-    console.log(data);
-    setPostList((prevList) => {
-      return [...prevList, ...data.postList];
+    dispatchPostList({
+      type: "POST_LIST_UPDATE",
+      val: { postList: data.postList, category, totalElements: 22 },
     });
     setIsLoading(false);
   };
   return (
     <>
       <Header />
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="relative mt-10 mx-[100px]">
-          <UserIntroduction
-            nickName={someoneInfo.nickName}
-            introduction={someoneInfo.introduction}
-            userImage={someoneInfo.userImage}
-            setModal={setModal}
-          />
-          <Category
-            categoryList={categoryList}
-            category={category}
-            changeCurrentCategory={changeCurrentCategory}
-          />
-          <div className="mt-7">
-            <Grid>
-              {postList?.map((ele, index) => {
-                if (postList.length - 1 === index) {
-                  return (
-                    <Card
-                      lastCardRef={lastCardRef}
-                      key={ele.postId}
-                      ele={ele}
-                    />
-                  );
-                } else {
-                  return <Card key={ele.postId} ele={ele} />;
-                }
-              })}
-            </Grid>
-          </div>
+
+      <div className="relative mt-10 mx-[100px]">
+        <UserIntroduction
+          nickName={someoneInfo.nickName}
+          introduction={someoneInfo.introduction}
+          userImage={someoneInfo.userImage}
+          setModal={setModal}
+        />
+        <Category
+          categoryList={categoryList}
+          category={category}
+          changeCurrentCategory={changeCurrentCategory}
+        />
+        <div className="mt-7">
+          <Grid>
+            {postList?.map((ele, index) => {
+              if (postList.length - 1 === index) {
+                return (
+                  <Card lastCardRef={lastCardRef} key={ele.postId} ele={ele} />
+                );
+              } else {
+                return <Card key={ele.postId} ele={ele} />;
+              }
+            })}
+          </Grid>
+          {isLoading ? <Loading /> : null}
         </div>
-      )}
+      </div>
+
       {modal
         ? createPortal(
             <EditProfileModal

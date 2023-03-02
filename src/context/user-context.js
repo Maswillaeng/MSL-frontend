@@ -15,6 +15,7 @@ const userInfoReducer = (state, { type, val }) => {
       copyState.nickName = val?.nickName;
       copyState.userImage = val?.userImage;
       copyState.introduction = val?.introduction;
+      copyState.userId = val?.userId;
       return copyState;
     default:
       return null;
@@ -28,6 +29,7 @@ export const UserProvider = (props) => {
     nickName: "",
     userImage: "",
     introduction: "",
+    userId: "",
   });
 
   const updateUserInfo = (userData) => {

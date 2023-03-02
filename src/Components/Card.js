@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { changeDateFormat, formatNumber } from "../utility/chage-format";
 import LazyImage from "./LazyImage";
-import basicProfile from "../assets/basic_profile.jpg";
+import basicThumbnail from "../assets/basic_profile.jpg";
+import basicProfile from "../assets/basic_thumbnail.png";
 
 const Card = ({ ele, lastCardRef }) => {
   const { pathname } = useLocation();
@@ -15,7 +16,7 @@ const Card = ({ ele, lastCardRef }) => {
           <LazyImage
             alt={"게시물 썸네일"}
             className="object-cover object-center w-full h-[150px] rounded-t-[10px]"
-            src={ele.thumbNail || basicProfile}
+            src={ele.thumbNail || basicThumbnail}
           />
         </Link>
       </div>

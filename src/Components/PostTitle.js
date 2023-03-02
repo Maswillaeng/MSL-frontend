@@ -16,7 +16,7 @@ const PostTitle = ({ title, setTitle, localStorageKey }) => {
   }, [title]);
 
   return (
-    <div className="border-b-2 mb-8 border-main">
+    <div className="border-b-2 mb-3 border-main">
       <textarea
         onChange={userTypingTitle}
         className="w-full h-14 pl-4 pt-1 text-2xl border-main resize-none outline-none"
