@@ -20,18 +20,16 @@ const PostContent = ({
     const formData = new FormData();
     formData.append("photo", file);
 
-    const data = await changeImgFormat(formData);
-    console.log(data);
-    uploadImages.push(data);
+    const datas = await changeImgFormat(formData);
+    uploadImages.push(`http://localhost:8080${datas.path}`);
 
     getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {
       resolve({
         data: {
-          link: `http://localhost:8080${data.path}`,
+          link: `http://localhost:8080${datas.path}`,
         },
       });
-      reject(console.error("에러"));
     });
   };
 

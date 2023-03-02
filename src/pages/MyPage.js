@@ -134,7 +134,7 @@ const MyPage = () => {
   const getUserPostList = async (category, userId, offset) => {
     setIsLoading(true);
     const { data } = await userPostListFetch(category, userId, offset);
-    console.log(data);
+    setTotalPostNumber(data.totalElements);
     dispatchPostList({
       type: "POST_LIST_UPDATE",
       val: {
@@ -145,16 +145,21 @@ const MyPage = () => {
     });
     setIsLoading(false);
   };
+  console.log(someoneInfo);
   return (
     <>
       <Header />
 
       <div className="relative mt-10 mx-[100px]">
         <UserIntroduction
-          nickName={someoneInfo.nickName}
-          introduction={someoneInfo.introduction}
-          userImage={someoneInfo.userImage}
+          nickName={someoneInfo?.nickName}
+          introduction={someoneInfo?.introduction}
+          userImage={someoneInfo?.userImage}
           setModal={setModal}
+          followerCnt={someoneInfo?.followerCnt}
+          followingCnt={someoneInfo?.followerCnt}
+          followState={someoneInfo?.followState}
+          postNumber={someoneInfo?.postCnt}
         />
         <Category
           categoryList={categoryList}

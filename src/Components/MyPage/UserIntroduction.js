@@ -6,12 +6,22 @@ import basicProfile from "../../assets/basic_thumbnail.png";
 import UserListModal from "./UserListModal";
 import { createPortal } from "react-dom";
 
-const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
-  const { userInfo } = useContext(UserContext);
+const UserIntroduction = ({
+  userImage,
+  nickName,
+  introduction,
+  setModal,
+  followerCnt,
+  followingCnt,
+  followState,
+  postNumber,
+}) => {
+  const { userInfo, isLoggedIn } = useContext(UserContext);
   const navigation = useNavigate();
   const { userId } = useParams();
   const [followerListModal, setFollowerListModal] = useState(false);
   const [followingListModal, setFollowingListModal] = useState(false);
+  const [isFollow, setIsFollow] = useState(followState);
 
   const deleteUserHandler = async () => {
     const answer = window.confirm("정말로 탈퇴하시겠습니까?");
@@ -27,8 +37,21 @@ const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
     setModal(true);
   };
 
-  const followUser = () => {
-    console.log("hgi");
+  const followUser = async () => {
+    if (!isLoggedIn) {
+      alert("로그인을 해주세요");
+    }
+    if (isFollow) {
+    } else {
+      const response = await fetch("http://localhost:8080/api/following", {
+        method: "POST",
+
+        credentials: "include",
+      });
+      if (response.ok) {
+        setIsFollow(true);
+      }
+    }
   };
 
   const showFollowerListModal = () => {
@@ -53,8 +76,11 @@ const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
           </div>
         ) : (
           <div className="absolute right-0 flex gap-5">
-            <button onClick={followUser} className="button">
-              팔로우
+            <button
+              onClick={followUser}
+              className={`${isFollow ? "target-button" : "button"}`}
+            >
+              {isFollow ? "팔로잉" : "팔로우"}
             </button>
           </div>
         )}
@@ -73,34 +99,42 @@ const UserIntroduction = ({ userImage, nickName, introduction, setModal }) => {
           <ul className="flex justify-evenly border-y-2 border-main text-main w-3/5">
             <li className="flex flex-col text-center">
               <span>게시물</span>
-              <span>110</span>
+              <span>{postNumber}</span>
             </li>
             <li
               onClick={showFollowerListModal}
               className="flex flex-col text-center cursor-pointer"
             >
               <span>팔로워</span>
-              <span>5</span>
+              <span>{followerCnt}</span>
             </li>
             <li
               onClick={showFollowListModal}
               className="flex flex-col text-center cursor-pointer"
             >
-              <span>팔로우</span>
-              <span>13</span>
+              <span>팔로잉</span>
+              <span>{followingCnt}</span>
             </li>
           </ul>
         </div>
       </div>
       {followerListModal
         ? createPortal(
-            <UserListModal title="팔로워" setModal={setFollowerListModal} />,
+            <UserListModal
+              id="follower"
+              title="팔로워"
+              setModal={setFollowerListModal}
+            />,
             document.getElementById("modal")
           )
         : null}
       {followingListModal
         ? createPortal(
-            <UserListModal title="팔로잉" setModal={setFollowingListModal} />,
+            <UserListModal
+              id="following"
+              title="팔로잉"
+              setModal={setFollowingListModal}
+            />,
             document.getElementById("modal")
           )
         : null}

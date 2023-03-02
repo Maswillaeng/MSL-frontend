@@ -16,7 +16,7 @@ const Card = ({ ele, lastCardRef }) => {
           <LazyImage
             alt={"게시물 썸네일"}
             className="object-cover object-center w-full h-[150px] rounded-t-[10px]"
-            src={ele.thumbNail || basicThumbnail}
+            src={ele.thumbnail || basicThumbnail}
           />
         </Link>
       </div>

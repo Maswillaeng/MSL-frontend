@@ -8,7 +8,6 @@ const PostList = ({ category }) => {
     category ? `?category=${category}` : ""
   }`;
   const [{ data: post }, isLoading, error] = useFetch("GET", url, {});
-
   return (
     <>
       {isLoading ? (

@@ -1,33 +1,36 @@
+import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import basicProfile from "../../assets/basic_thumbnail.png";
 
-const UserListModal = ({ title, setModal }) => {
-  const userList = [
-    { userId: 1, userImage: "", nickName: "정채운" },
-    { userId: 2, userImage: "", nickName: "정채운" },
-    { userId: 3, userImage: "", nickName: "정채운" },
-    { userId: 4, userImage: "", nickName: "정채운" },
-    { userId: 5, userImage: "", nickName: "정채운" },
-    { userId: 6, userImage: "", nickName: "정채운" },
-    { userId: 7, userImage: "", nickName: "정채운" },
-    { userId: 8, userImage: "", nickName: "정채운" },
-    { userId: 9, userImage: "", nickName: "정채운" },
-    { userId: 10, userImage: "", nickName: "정채운" },
-    { userId: 11, userImage: "", nickName: "정채운" },
-    { userId: 12, userImage: "", nickName: "정채운" },
-    { userId: 13, userImage: "", nickName: "정채운" },
-    { userId: 20, userImage: "", nickName: "정채운" },
-    { userId: 30, userImage: "", nickName: "정채운" },
-    { userId: 40, userImage: "", nickName: "정채운" },
-    { userId: 50, userImage: "", nickName: "정채운" },
-    { userId: 60, userImage: "", nickName: "정채운" },
-    { userId: 70, userImage: "", nickName: "정채운" },
-    { userId: 80, userImage: "", nickName: "정채운" },
-    { userId: 90, userImage: "", nickName: "정채운" },
-    { userId: 100, userImage: "", nickName: "정채운" },
-    { userId: 101, userImage: "", nickName: "정채운" },
-    { userId: 102, userImage: "", nickName: "정채운" },
-  ];
+const UserListModal = ({ title, setModal, id }) => {
+  const [userList, setUserList] = useState([]);
+  const { userId } = useParams();
+
+  const getFollowerOrFollowingData = async () => {
+    if (id === "follower") {
+      const response = await fetch(
+        `http://localhost:8080/api/followerList/${userId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUserList(data);
+      }
+    } else {
+      const response = await fetch(
+        `http://localhost:8080/api/followingList/${userId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUserList(data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getFollowerOrFollowingData();
+  }, []);
   return (
     <div
       onClick={(e) => {
