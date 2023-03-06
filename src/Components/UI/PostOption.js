@@ -19,7 +19,8 @@ const PostOption = ({ tagList, setTagList, categoryId, setCategoryId }) => {
     const { value } = tagRef?.current;
     if (e.key === "," || e.key === "Enter") {
       e.preventDefault();
-      console.log(value, tagList);
+      if (value === "") return;
+
       if (!tagList.find((ele) => ele === value)) {
         setTagList((prevList) => [...prevList, value]);
       }

@@ -8,6 +8,7 @@ import Header from "../Components/Header";
 import PostContent from "../Components/PostContent";
 import PostFooter from "../Components/PostFooter";
 import PostTitle from "../Components/PostTitle";
+import PostOption from "../Components/UI/PostOption";
 
 const ModifyBoard = () => {
   const { postId } = useParams();
@@ -16,6 +17,7 @@ const ModifyBoard = () => {
   const [title, setTitle] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [tagList, setTagList] = useState([]);
 
   const getUploadImageArray = (imageArray) => {
     if (imageArray.length > 0) {
@@ -35,8 +37,16 @@ const ModifyBoard = () => {
     }
     if (categoryId === "") {
       alert("카테고리를 설정해주세요");
+      return;
     }
-    await updatePostFetch(thumbnail, title, editorToHtml, postId, categoryId);
+    await updatePostFetch(
+      thumbnail,
+      title,
+      editorToHtml,
+      postId,
+      categoryId,
+      tagList
+    );
     navigation(`/post/detail/${postId}`);
   };
 
@@ -55,9 +65,9 @@ const ModifyBoard = () => {
   useEffect(() => {
     const getPostData = async () => {
       const { data } = await getPostDetailFetch(postId);
-
       setTitle(data.title);
       changeHtmlToDraft(data.content);
+      setTagList(data.hashTagList);
     };
     getPostData();
   }, [postId]);
@@ -67,7 +77,13 @@ const ModifyBoard = () => {
       <Header />
       <div className={`pt-5 min-w-[1000px]  mx-20 flex justify-center`}>
         <form className="flex flex-col w-7/12" onSubmit={submitUpdatePost}>
-          <PostTitle title={title} setSubmitTitle={setTitle} />
+          <PostTitle title={title} setTitle={setTitle} />
+          <PostOption
+            tagList={tagList}
+            setTagList={setTagList}
+            categoryId={categoryId}
+            setCategoryId={setCategoryId}
+          />
           <PostContent
             editorState={editorState}
             setEditorState={setEditorState}

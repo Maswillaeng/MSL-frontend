@@ -7,6 +7,8 @@ import { nickNameRule } from "../../utility/input-rules";
 import Loading from "../Loading";
 import basicProfile from "../../assets/basic_profile.jpg";
 import SignInputContext from "../../context/check-signInput-context";
+import { useEffect } from "react";
+import { changeImgFormat } from "../../api/postFetch";
 
 const EditProfileModal = ({
   userImage,
@@ -43,9 +45,12 @@ const EditProfileModal = ({
 
   const checkOverlapNickName = async () => {
     const { value } = nickNameRef.current;
+    if (value === nickName) {
+      updateNickNameInfo(true, false);
+      return;
+    }
     try {
       const response = await checkNickNameOverlapFetch(value);
-      console.log(response);
       if (response.ok) {
         updateNickNameInfo(true, false);
       } else {
@@ -57,14 +62,13 @@ const EditProfileModal = ({
     }
   };
 
-  const changeProfileImg = (e) => {
-    let reader = new FileReader();
+  const changeProfileImg = async (e) => {
+    const formData = new FormData();
+    formData.append("profile", e.target.files[0]);
 
-    reader.onload = (e) => {
-      setEditUserImage(e.target.result);
-      console.log(e.target.result);
-    };
-    reader.readAsDataURL(e.target.files[0]);
+    const data = await changeImgFormat(formData);
+
+    setEditUserImage(`${process.env.REACT_APP_BASE_URL}${data.path}`);
   };
 
   const submitEditProfile = async (e) => {
@@ -72,7 +76,6 @@ const EditProfileModal = ({
     if (!isValid) return;
     const { value: editNickName } = nickNameRef?.current;
     const { value: editIntroduction } = introductionRef?.current;
-    console.log(editNickName, editIntroduction);
 
     setIsLoading(true);
     try {
@@ -85,13 +88,19 @@ const EditProfileModal = ({
         setModal(false);
         window.location.replace(`/users/${userId}`);
       } else {
-        throw new Error("중복된 닉네임 입니다.");
+        throw new Error("알 수 없는 에러");
       }
     } catch (error) {
-      alert(error.message);
+      console.error(error.message);
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (nickNameRef.current && nickName === nickNameRef.current.value) {
+      updateNickNameInfo(true, false);
+    }
+  }, [nickName]);
   return (
     <>
       <div
@@ -112,7 +121,7 @@ const EditProfileModal = ({
               <img
                 className="w-[70px] h-[70px] rounded-full object-center object-cover"
                 alt="유저 프로필 이미지"
-                src={`${editUserImage || basicProfile}`}
+                src={`${editUserImage || userImage || basicProfile}`}
               />
               <label
                 className="text-sub border-2 border-sub rounded-[3px] cursor-pointer"

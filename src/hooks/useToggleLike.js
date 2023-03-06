@@ -1,6 +1,3 @@
-import { useContext, useState } from "react";
-import PostContext from "../context/post-context";
-
 const useToggleLike = (
   isLoggedIn,
   likeNumber,

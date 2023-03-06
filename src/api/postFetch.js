@@ -39,8 +39,10 @@ export const updatePostFetch = async (
   title,
   editorToHtml,
   postId,
-  categoryId
+  categoryId,
+  tagList
 ) => {
+  console.log(thumbnail, title, editorToHtml, postId, categoryId, tagList);
   try {
     const response = await fetch(`${BASE_URL}/api/post`, {
       method: "PUT",
@@ -54,6 +56,7 @@ export const updatePostFetch = async (
         content: editorToHtml,
         postId,
         category: categoryId,
+        hashTagList: tagList,
       }),
     });
     if (response.ok) {
@@ -114,7 +117,6 @@ export const getPostListFetch = async (category) => {
 };
 
 export const changeImgFormat = async (imageObject) => {
-  console.log("hi");
   try {
     const response = await fetch(`${BASE_URL}/api/changeFormatImage`, {
       method: "POST",
@@ -122,7 +124,6 @@ export const changeImgFormat = async (imageObject) => {
       body: imageObject,
     });
     if (response.ok) {
-      console.log(response);
       return await response.json();
     } else {
       throw new Error("변환 되지 않았습니다.");

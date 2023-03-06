@@ -1,10 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteUserFetch } from "../../api/userFetch";
 import UserContext from "../../context/user-context";
 import basicProfile from "../../assets/basic_thumbnail.png";
 import UserListModal from "./UserListModal";
 import { createPortal } from "react-dom";
+import { formatNumber } from "../../utility/chage-format";
+import { changeFollowStateFetch } from "../../api/followFetch";
 
 const UserIntroduction = ({
   userImage,
@@ -14,6 +16,7 @@ const UserIntroduction = ({
   followerCnt,
   followingCnt,
   followState,
+  setFollowState,
   postNumber,
 }) => {
   const { userInfo, isLoggedIn } = useContext(UserContext);
@@ -21,7 +24,6 @@ const UserIntroduction = ({
   const { userId } = useParams();
   const [followerListModal, setFollowerListModal] = useState(false);
   const [followingListModal, setFollowingListModal] = useState(false);
-  const [isFollow, setIsFollow] = useState(followState);
 
   const deleteUserHandler = async () => {
     const answer = window.confirm("정말로 탈퇴하시겠습니까?");
@@ -41,27 +43,29 @@ const UserIntroduction = ({
     if (!isLoggedIn) {
       alert("로그인을 해주세요");
     }
-    if (isFollow) {
+    if (followState) {
+      await toggleFollow("DELETE", false);
     } else {
-      const response = await fetch("http://localhost:8080/api/following", {
-        method: "POST",
+      await toggleFollow("POST", true);
+    }
+  };
 
-        credentials: "include",
-      });
-      if (response.ok) {
-        setIsFollow(true);
-      }
+  const toggleFollow = async (method, state) => {
+    const returnValue = await changeFollowStateFetch(method, userId);
+    if (returnValue) {
+      setFollowState(state);
     }
   };
 
   const showFollowerListModal = () => {
+    if (followerCnt === 0) return;
     setFollowerListModal(true);
   };
 
   const showFollowListModal = () => {
+    if (followingCnt === 0) return;
     setFollowingListModal(true);
   };
-
   return (
     <>
       <div className="mb-10">
@@ -78,9 +82,9 @@ const UserIntroduction = ({
           <div className="absolute right-0 flex gap-5">
             <button
               onClick={followUser}
-              className={`${isFollow ? "target-button" : "button"}`}
+              className={`${followState ? "target-button" : "button"}`}
             >
-              {isFollow ? "팔로잉" : "팔로우"}
+              {followState ? "팔로잉" : "팔로우"}
             </button>
           </div>
         )}
@@ -99,21 +103,21 @@ const UserIntroduction = ({
           <ul className="flex justify-evenly border-y-2 border-main text-main w-3/5">
             <li className="flex flex-col text-center">
               <span>게시물</span>
-              <span>{postNumber}</span>
+              <span>{formatNumber({ notation: "compact" }, postNumber)}</span>
             </li>
             <li
               onClick={showFollowerListModal}
               className="flex flex-col text-center cursor-pointer"
             >
               <span>팔로워</span>
-              <span>{followerCnt}</span>
+              <span>{formatNumber({ notation: "compact" }, followerCnt)}</span>
             </li>
             <li
               onClick={showFollowListModal}
               className="flex flex-col text-center cursor-pointer"
             >
               <span>팔로잉</span>
-              <span>{followingCnt}</span>
+              <span>{formatNumber({ notation: "compact" }, followingCnt)}</span>
             </li>
           </ul>
         </div>

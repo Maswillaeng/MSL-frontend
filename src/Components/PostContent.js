@@ -21,13 +21,13 @@ const PostContent = ({
     formData.append("photo", file);
 
     const datas = await changeImgFormat(formData);
-    uploadImages.push(`http://localhost:8080${datas.path}`);
+    uploadImages.push(`${process.env.REACT_APP_BASE_URL}${datas.path}`);
 
     getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {
       resolve({
         data: {
-          link: `http://localhost:8080${datas.path}`,
+          link: `${process.env.REACT_APP_BASE_URL}${datas.path}`,
         },
       });
     });
@@ -66,7 +66,7 @@ const PostContent = ({
             uploadCallback: uploadImageCallBack,
             uploadEnabled: true,
             previewImage: true,
-            defaultSize: { width: "100%", height: "auto" },
+            defaultSize: { width: "auto", height: "auto" },
           },
         }}
         placeholder="내용을 작성해주세요."

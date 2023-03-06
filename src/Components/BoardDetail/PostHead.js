@@ -6,6 +6,7 @@ import UserContext from "../../context/user-context";
 import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
 import { changeDateFormat } from "../../utility/chage-format";
 import DropDown from "../UI/DropDown";
+import basicProfile from "../../assets/basic_thumbnail.png";
 
 const menuButtonText = ` <svg fill="#AA233C" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
     <path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z" />
@@ -45,7 +46,7 @@ const PostHead = ({
           <img
             className="max-w-[50px] max-h-[50px] min-w-[50px] min-h-[50px] mr-5 rounded-full bg-center"
             alt="해당 게시물 유저 이미지"
-            src={postUserImage}
+            src={postUserImage || basicProfile}
           />
         </Link>
         <ul>

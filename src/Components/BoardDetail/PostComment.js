@@ -97,6 +97,7 @@ const PostComment = ({ comments }) => {
             element={ele}
             basicProfile={basicProfile}
             comments={comments}
+            postId={postId}
           />
         ))}
       </ul>

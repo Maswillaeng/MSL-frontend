@@ -7,27 +7,22 @@ export const createRecommentFetch = async (commentId, value) => {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ commentId, content: value }),
+    body: JSON.stringify({ parentId: commentId, content: value }),
   });
 };
 
-export const deleteRecommentFetch = async (commentId) => {
-  return await fetch(`${BASE_URL}/api/recomment/${commentId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
-};
-
-export const editRecommentFetch = async (value, commentId) => {
-  return await fetch(`${BASE_URL}/api/recomment`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ commentId: commentId, content: value }),
-    credentials: "include",
-  });
+export const getRecommentFetch = async (commentId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/recomment/${commentId}`, {
+      credentials: "include",
+    });
+    if (response.ok) {
+      const { data } = await response.json();
+      return data;
+    } else {
+      throw new Error("받아오는데 실패");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
 };

@@ -8,6 +8,7 @@ const PostContext = createContext({
   updateCommentContent: () => {},
   deleteComment: () => {},
   updateCommentLikeInfo: () => {},
+  dispatchPostInfo: () => {},
 });
 
 const postInfoReducer = (state, { type, val }) => {
@@ -18,13 +19,13 @@ const postInfoReducer = (state, { type, val }) => {
       return copyState;
     case "UPDATE_LIKE":
       copyState.likeNumber = val.likeNumber;
-      copyState.liked = val.isLiked;
+      copyState.isLiked = val.isLiked;
       return copyState;
     case "UPDATE_COMMENT_LIKE":
       const newLikeArray = copyState.commentList.map((ele) => {
         if (ele.commentId === val.commentId) {
           ele.like = val.likeNumber;
-          ele.liked = val.isLiked;
+          ele.isLiked = val.isLiked;
         }
         return ele;
       });
@@ -107,6 +108,7 @@ export const PostProvider = (props) => {
         updateCommentContent,
         deleteComment,
         updateCommentLikeInfo,
+        dispatchPostInfo,
       }}
     >
       {props.children}

@@ -1,5 +1,5 @@
 export const formatNumber = (option, number) => {
-  return new Intl.NumberFormat("en-US", option).format(number);
+  return new Intl.NumberFormat("ko-KR", option).format(number);
 };
 
 export const changeDateFormat = (time, option) => {

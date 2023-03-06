@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { getFollowerAndFollowingFetch } from "../../api/followFetch";
 import basicProfile from "../../assets/basic_thumbnail.png";
 
 const UserListModal = ({ title, setModal, id }) => {
@@ -9,23 +10,12 @@ const UserListModal = ({ title, setModal, id }) => {
   const { userId } = useParams();
 
   const getFollowerOrFollowingData = async () => {
-    if (id === "follower") {
-      const response = await fetch(
-        `http://localhost:8080/api/followerList/${userId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setUserList(data);
-      }
-    } else {
-      const response = await fetch(
-        `http://localhost:8080/api/followingList/${userId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setUserList(data);
-      }
-    }
+    getFollowerAndFollowingInfo(id);
+  };
+
+  const getFollowerAndFollowingInfo = async (id) => {
+    const { data } = await getFollowerAndFollowingFetch(userId, id);
+    setUserList(data);
   };
 
   useEffect(() => {
@@ -45,11 +35,13 @@ const UserListModal = ({ title, setModal, id }) => {
         <UserList>
           {userList.map((ele) => (
             <li className="flex items-center ml-10 gap-3" key={ele.userId}>
-              <img
-                className="w-[40px] h-[40px] rounded-full"
-                alt="유저 이미지"
-                src={ele.userImage || basicProfile}
-              />
+              <Link onClick={() => setModal(false)} to={`/users/${ele.userId}`}>
+                <img
+                  className="w-[40px] h-[40px] rounded-full"
+                  alt="유저 이미지"
+                  src={ele.userImage || basicProfile}
+                />
+              </Link>
               <span>{ele.nickName}</span>
             </li>
           ))}

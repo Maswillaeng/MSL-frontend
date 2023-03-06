@@ -5,24 +5,13 @@ import UserContext from "../context/user-context";
 import UserIntroduction from "../Components/MyPage/UserIntroduction";
 import Category from "../Components/UI/Category";
 import Loading from "../Components/Loading";
-import basicImage from "../assets/basic_thumbnail.png";
 import { createPortal } from "react-dom";
-import {
-  getSomeoneUserInfoFetch,
-  getUserInfoFetch,
-  userPostListFetch,
-} from "../api/userFetch";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { getSomeoneUserInfoFetch, userPostListFetch } from "../api/userFetch";
+import { useParams } from "react-router-dom";
 import useCategory from "../hooks/useCategory";
 import Card from "../Components/Card";
 import { GridCard } from "../Components/Board/PostList";
 import styled from "styled-components";
-import { useReducer } from "react";
 
 const categoryList = [
   { id: "", category: "전체" },
@@ -31,29 +20,6 @@ const categoryList = [
   { id: "FREE", category: "자유" },
 ];
 
-const postListReducer = (state, { type, val }) => {
-  console.log(val);
-  const copyState = JSON.parse(JSON.stringify(state));
-  switch (type) {
-    case "POST_LIST_UPDATE":
-      const offset = copyState[`${val.category}PostList`].offset;
-      const prevList = [...copyState[`${val.category}PostList`].postList];
-      if (prevList?.length === offset + val.postList?.length - 20)
-        return copyState;
-      copyState[`${val.category}PostList`].postCnt = val?.totalElements;
-      copyState[`${val.category}PostList`].postList = [
-        ...prevList,
-        ...val.postList,
-      ];
-      return copyState;
-    case "UPDATE_OFFSET":
-      copyState[`${val.category}PostList`].offset = val.offset;
-      return copyState;
-    default:
-      return null;
-  }
-};
-
 const MyPage = () => {
   const { userInfo } = useContext(UserContext);
   const { introduction, nickName, userImage } = userInfo;
@@ -61,40 +27,22 @@ const MyPage = () => {
   const { userId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
-  const [postListObj, dispatchPostList] = useReducer(postListReducer, {
-    PostList: {
-      offset: 20,
-      postCnt: 0,
-      postList: [],
-    },
-    RECIPEPostList: {
-      offset: 20,
-      postCnt: 0,
-      postList: [],
-    },
-    BAR_SNACKPostList: {
-      offset: 20,
-      postCnt: 0,
-      postList: [],
-    },
-    FREEPostList: {
-      offset: 20,
-      postCnt: 0,
-      postList: [],
-    },
-  });
-  const [totalPostNumber, setTotalPostNumber] = useState(1);
   const [someoneInfo, setSomeoneInfo] = useState({});
   const { category, changeCurrentCategory } = useCategory("myCategory");
-  const postList = postListObj[`${category}PostList`].postList;
-  const offset = postListObj[`${category}PostList`].offset;
+  const [isFollow, setIsFollow] = useState(false);
+
+  const [categoryDataMap, setCategoryDataMap] = useState({});
+  const [currentPageMap, setCurrentPageMap] = useState({});
+  const [totalElementsMap, setTotalElmentsMap] = useState({});
+
+  const postList = categoryDataMap[category] || [];
 
   useEffect(() => {
     const someoneInfoData = async () => {
       setIsLoading(true);
-      const data = await getSomeoneUserInfoFetch(userId);
-      console.log(data);
+      const { data } = await getSomeoneUserInfoFetch(userId);
       setSomeoneInfo(data);
+      setIsFollow(data.followState);
       setIsLoading(false);
     };
     someoneInfoData();
@@ -102,23 +50,26 @@ const MyPage = () => {
 
   useEffect(() => {
     const firstGetPostListData = async () => {
-      await getUserPostList(category, userId, offset);
+      await getUserPostList(category, userId);
     };
     firstGetPostListData();
-  }, [category, userId, offset]);
+  }, [category, userId]);
 
   useEffect(() => {
-    if (totalPostNumber === postList.length) return;
+    console.log(totalElementsMap[category], postList.length);
+    if (totalElementsMap[category] === postList.length) return;
 
     let observer;
     if (lastCardRef.current) {
       observer = new IntersectionObserver(
         async ([entry]) => {
           if (entry.isIntersecting) {
-            dispatchPostList({
-              type: "UPDATE_OFFSET",
-              val: { offset: offset + 20, category },
+            setCurrentPageMap((prevPageMap) => {
+              const newPage = (prevPageMap[category] || 20) + 20;
+              return { ...prevPageMap, [category]: newPage };
             });
+            const page = (currentPageMap[category] || 20) + 20;
+            await getPostDataOfPage(page);
           }
         },
         {
@@ -129,27 +80,35 @@ const MyPage = () => {
     }
     return () => observer && observer.disconnect();
   });
-  //카테고리가 바뀌면 오프셋도 초기화
 
-  const getUserPostList = async (category, userId, offset) => {
+  const getUserPostList = async (category, userId) => {
     setIsLoading(true);
-    const { data } = await userPostListFetch(category, userId, offset);
-    setTotalPostNumber(data.totalElements);
-    dispatchPostList({
-      type: "POST_LIST_UPDATE",
-      val: {
-        postList: data.content,
-        category,
-        totalElements: data.totalElements,
-      },
-    });
+    if (!categoryDataMap[category]) {
+      const { data } = await userPostListFetch(category, userId, 20);
+      setCategoryDataMap((prevMap) => {
+        return { ...prevMap, [category]: [...data.content] };
+      });
+      setTotalElmentsMap((prevTotal) => {
+        return { ...prevTotal, [category]: data.totalElements };
+      });
+      setCurrentPageMap((prevPage) => {
+        return { ...prevPage, [category]: 20 };
+      });
+    }
     setIsLoading(false);
   };
-  console.log(someoneInfo);
+
+  const getPostDataOfPage = async (page) => {
+    const { data } = await userPostListFetch(category, userId, page);
+    setCategoryDataMap((prevMap) => {
+      const newData = [...(prevMap[category] || []), ...data.content];
+      return { ...prevMap, [category]: newData };
+    });
+  };
+
   return (
     <>
       <Header />
-
       <div className="relative mt-10 mx-[100px]">
         <UserIntroduction
           nickName={someoneInfo?.nickName}
@@ -157,8 +116,9 @@ const MyPage = () => {
           userImage={someoneInfo?.userImage}
           setModal={setModal}
           followerCnt={someoneInfo?.followerCnt}
-          followingCnt={someoneInfo?.followerCnt}
-          followState={someoneInfo?.followState}
+          followingCnt={someoneInfo?.followingCnt}
+          followState={isFollow}
+          setFollowState={setIsFollow}
           postNumber={someoneInfo?.postCnt}
         />
         <Category
@@ -181,7 +141,6 @@ const MyPage = () => {
           {isLoading ? <Loading /> : null}
         </div>
       </div>
-
       {modal
         ? createPortal(
             <EditProfileModal
