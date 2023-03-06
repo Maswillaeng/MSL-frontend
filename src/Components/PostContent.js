@@ -21,13 +21,13 @@ const PostContent = ({
     formData.append("photo", file);
 
     const datas = await changeImgFormat(formData);
-    uploadImages.push(`${process.env.REACT_APP_BASE_URL}${datas.path}`);
+    uploadImages.push(`${process.env.REACT_APP_BASE_URL}${datas.img}`);
 
     getUploadImageArray(uploadImages);
     return new Promise((resolve, reject) => {
       resolve({
         data: {
-          link: `${process.env.REACT_APP_BASE_URL}${datas.path}`,
+          link: `${process.env.REACT_APP_BASE_URL}${datas.img}`,
         },
       });
     });

@@ -36,6 +36,7 @@ const BoardCreate = () => {
 
   const submitPostData = async (e) => {
     e.preventDefault();
+    console.log(thumbnail);
     if (title === "") {
       alert("제목을 입력해주세요");
       return;

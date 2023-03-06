@@ -22,6 +22,7 @@ const BoardDetail = () => {
     const getPostDetailData = async () => {
       setIsLoading(true);
       const { data } = await getPostDetailFetch(postId);
+      console.log(data);
       setIsLoading(false);
       getPostInfo(data);
     };

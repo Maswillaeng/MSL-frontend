@@ -18,7 +18,7 @@ export const changeFollowStateFetch = async (method, userId) => {
 
 export const getFollowerAndFollowingFetch = async (userId, id) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/${id}List/${userId}`);
+    const response = await fetch(`${BASE_URL}/api/${id}-list/${userId}`);
     if (response.ok) {
       return await response.json();
     } else {

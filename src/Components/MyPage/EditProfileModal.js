@@ -64,11 +64,19 @@ const EditProfileModal = ({
 
   const changeProfileImg = async (e) => {
     const formData = new FormData();
-    formData.append("profile", e.target.files[0]);
+    formData.append("photo", e.target.files[0]);
 
-    const data = await changeImgFormat(formData);
+    let data;
+    const response = await fetch(`http://localhost:8080/api/user/image`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+    if (response.ok) {
+      data = await response.json();
+    }
 
-    setEditUserImage(`${process.env.REACT_APP_BASE_URL}${data.path}`);
+    setEditUserImage(`${process.env.REACT_APP_BASE_URL}${data.img}`);
   };
 
   const submitEditProfile = async (e) => {

@@ -78,7 +78,7 @@ export const userPostListFetch = async (category, userId, offset) => {
     const response = await fetch(
       `${BASE_URL}/api/post/user?userId=${userId}${
         category && `&category=${category}`
-      }&offset=${offset}`,
+      }&page=${offset}`,
       { credentials: "include" }
     );
     if (response.ok) {

@@ -65,10 +65,10 @@ const MyPage = () => {
         async ([entry]) => {
           if (entry.isIntersecting) {
             setCurrentPageMap((prevPageMap) => {
-              const newPage = (prevPageMap[category] || 20) + 20;
+              const newPage = (prevPageMap[category] || 1) + 1;
               return { ...prevPageMap, [category]: newPage };
             });
-            const page = (currentPageMap[category] || 20) + 20;
+            const page = (currentPageMap[category] || 1) + 1;
             await getPostDataOfPage(page);
           }
         },
@@ -84,7 +84,8 @@ const MyPage = () => {
   const getUserPostList = async (category, userId) => {
     setIsLoading(true);
     if (!categoryDataMap[category]) {
-      const { data } = await userPostListFetch(category, userId, 20);
+      const { data } = await userPostListFetch(category, userId, 1);
+      console.log(data.content);
       setCategoryDataMap((prevMap) => {
         return { ...prevMap, [category]: [...data.content] };
       });
@@ -92,7 +93,7 @@ const MyPage = () => {
         return { ...prevTotal, [category]: data.totalElements };
       });
       setCurrentPageMap((prevPage) => {
-        return { ...prevPage, [category]: 20 };
+        return { ...prevPage, [category]: 1 };
       });
     }
     setIsLoading(false);

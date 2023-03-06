@@ -118,7 +118,7 @@ export const getPostListFetch = async (category) => {
 
 export const changeImgFormat = async (imageObject) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/changeFormatImage`, {
+    const response = await fetch(`${BASE_URL}/api/change-format-image`, {
       method: "POST",
       credentials: "include",
       body: imageObject,

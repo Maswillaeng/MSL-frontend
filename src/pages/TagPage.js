@@ -5,13 +5,19 @@ import Header from "../Components/Header";
 const TagPage = () => {
   const { tagId } = useParams();
 
-  //   useEffect(() => {
+  useEffect(() => {
+    const ds = async () => {
+      const response = await fetch(
+        "http://localhost:8080/api/search/tag?name=dsg&page=1"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      }
+    };
+    ds();
+  }, []);
 
-  //   }, []);
-
-  //   const getTagPostData = async () => {
-  //     const data =
-  //   }
   return (
     <>
       <Header />

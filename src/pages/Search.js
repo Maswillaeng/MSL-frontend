@@ -27,9 +27,20 @@ const Search = () => {
     return () => clearTimeout(getSearchData);
   }, [searchValue]);
 
+  useEffect(() => {
+    const dsd = async () => {
+      const response = await fetch(`http://localhost:8080/api/best-tag`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      }
+    };
+    dsd();
+  });
+
   const getPostOfSearchValueData = async () => {
     const response = await fetch(
-      `http://localhost:8080/api/search?keyword=${searchValue}`
+      `http://localhost:8080/api/search?keyword=${searchValue}&page=1`
     );
     if (response.ok) {
       const { data } = await response.json();
