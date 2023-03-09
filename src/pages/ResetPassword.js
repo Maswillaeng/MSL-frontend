@@ -54,7 +54,7 @@ const ResetPassword = () => {
       const response = await fetch(`http://localhost:8080/api/user/reset-pwd`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application-json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: value,

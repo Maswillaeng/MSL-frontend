@@ -74,7 +74,7 @@ const Login = () => {
             회원가입&rarr;
           </button>
           <button
-            onClick={() => navigation("/")}
+            onClick={() => navigation("/login/account-info-find")}
             className="hover:border-b-2 border-black"
           >
             비밀번호 찾기&rarr;
