@@ -12,6 +12,7 @@ import useCategory from "../hooks/useCategory";
 import Card from "../Components/Card";
 import { GridCard } from "../Components/Board/PostList";
 import styled from "styled-components";
+import InfinityScroll from "../utility/infinity-scroll";
 
 const categoryList = [
   { id: "", category: "전체" },
@@ -29,7 +30,6 @@ const MyPage = () => {
   const [modal, setModal] = useState(false);
   const [someoneInfo, setSomeoneInfo] = useState({});
   const { category, changeCurrentCategory } = useCategory("myCategory");
-  const [isFollow, setIsFollow] = useState(false);
 
   const [categoryDataMap, setCategoryDataMap] = useState({});
   const [currentPageMap, setCurrentPageMap] = useState({});
@@ -42,7 +42,6 @@ const MyPage = () => {
       setIsLoading(true);
       const { data } = await getSomeoneUserInfoFetch(userId);
       setSomeoneInfo(data);
-      setIsFollow(data.followState);
       setIsLoading(false);
     };
     someoneInfoData();
@@ -55,37 +54,10 @@ const MyPage = () => {
     firstGetPostListData();
   }, [category, userId]);
 
-  useEffect(() => {
-    console.log(totalElementsMap[category], postList.length);
-    if (totalElementsMap[category] === postList.length) return;
-
-    let observer;
-    if (lastCardRef.current) {
-      observer = new IntersectionObserver(
-        async ([entry]) => {
-          if (entry.isIntersecting) {
-            setCurrentPageMap((prevPageMap) => {
-              const newPage = (prevPageMap[category] || 1) + 1;
-              return { ...prevPageMap, [category]: newPage };
-            });
-            const page = (currentPageMap[category] || 1) + 1;
-            await getPostDataOfPage(page);
-          }
-        },
-        {
-          threshold: 0.1,
-        }
-      );
-      observer.observe(lastCardRef.current);
-    }
-    return () => observer && observer.disconnect();
-  });
-
   const getUserPostList = async (category, userId) => {
     setIsLoading(true);
     if (!categoryDataMap[category]) {
       const { data } = await userPostListFetch(category, userId, 1);
-      console.log(data.content);
       setCategoryDataMap((prevMap) => {
         return { ...prevMap, [category]: [...data.content] };
       });
@@ -107,20 +79,30 @@ const MyPage = () => {
     });
   };
 
+  const setCurrentPage = () => {
+    setCurrentPageMap((prevPageMap) => {
+      const newPage = (prevPageMap[category] || 1) + 1;
+      return { ...prevPageMap, [category]: newPage };
+    });
+  };
+
+  InfinityScroll(
+    postList.length,
+    setCurrentPage,
+    currentPageMap[category] || 1,
+    lastCardRef,
+    getPostDataOfPage,
+    totalElementsMap[category]
+  );
+
   return (
     <>
       <Header />
       <div className="relative mt-10 mx-[100px]">
         <UserIntroduction
-          nickName={someoneInfo?.nickName}
-          introduction={someoneInfo?.introduction}
-          userImage={someoneInfo?.userImage}
           setModal={setModal}
-          followerCnt={someoneInfo?.followerCnt}
-          followingCnt={someoneInfo?.followingCnt}
-          followState={isFollow}
-          setFollowState={setIsFollow}
-          postNumber={someoneInfo?.postCnt}
+          setSomeoneInfo={setSomeoneInfo}
+          someoneInfo={someoneInfo}
         />
         <Category
           categoryList={categoryList}

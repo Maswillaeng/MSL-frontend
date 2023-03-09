@@ -1,16 +1,21 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GridCard } from "../Components/Board/PostList";
 import Card from "../Components/Card";
 import Header from "../Components/Header";
+import Loading from "../Components/Loading";
+import InfinityScroll from "../utility/infinity-scroll";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const navigation = useNavigate();
   const [postList, setPostList] = useState([]);
   const lastCardRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const searchPost = (e) => {
     const { value } = e.target;
@@ -19,34 +24,40 @@ const Search = () => {
 
   useEffect(() => {
     const getSearchData = setTimeout(() => {
-      if (searchValue === "") return;
       navigation(`/search?keyword=${searchValue}`);
       getPostOfSearchValueData();
-    }, 300);
+    }, 500);
 
     return () => clearTimeout(getSearchData);
   }, [searchValue]);
 
-  useEffect(() => {
-    const dsd = async () => {
-      const response = await fetch(`http://localhost:8080/api/best-tag`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      }
-    };
-    dsd();
-  });
-
-  const getPostOfSearchValueData = async () => {
+  const getPostOfSearchValueData = async (page = 1) => {
+    setIsLoading(true);
     const response = await fetch(
-      `http://localhost:8080/api/search?keyword=${searchValue}&page=1`
+      `http://localhost:8080/api/search?keyword=${searchValue}&page=${page}`
     );
     if (response.ok) {
       const { data } = await response.json();
-      setPostList(data.content);
+      setTotalElements(data.totalElements);
+      setPostList((prevList) => {
+        return [...prevList, ...data.content];
+      });
     }
+    setIsLoading(false);
   };
+
+  const setPage = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
+
+  InfinityScroll(
+    postList.length,
+    setPage,
+    currentPage,
+    lastCardRef,
+    getPostOfSearchValueData,
+    totalElements
+  );
   return (
     <>
       <Header />
@@ -63,8 +74,12 @@ const Search = () => {
             placeholder="검색어를 입력하세요"
           />
         </label>
+        <div className="mt-10 text-main font-bold text-xl">
+          <span>{`총 ${totalElements}개의 게시물`}</span>
+        </div>
       </div>
-      <div>
+
+      <div className="mx-[100px] mt-10">
         <GridCard>
           {postList?.map((ele, index) => {
             if (postList.length - 1 === index) {
@@ -77,6 +92,7 @@ const Search = () => {
           })}
         </GridCard>
       </div>
+      {isLoading && <Loading />}
     </>
   );
 };

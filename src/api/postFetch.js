@@ -98,6 +98,21 @@ export const getPostDetailFetch = async (postId) => {
   }
 };
 
+export const getSubscribePostFetch = async (page) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/new-pid?page=${page}`, {
+      credentials: "include",
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("에러 발생");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 export const getPostListFetch = async (category) => {
   try {
     const response = await fetch(

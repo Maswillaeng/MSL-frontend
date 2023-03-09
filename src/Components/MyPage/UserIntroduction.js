@@ -8,17 +8,7 @@ import { createPortal } from "react-dom";
 import { formatNumber } from "../../utility/chage-format";
 import { changeFollowStateFetch } from "../../api/followFetch";
 
-const UserIntroduction = ({
-  userImage,
-  nickName,
-  introduction,
-  setModal,
-  followerCnt,
-  followingCnt,
-  followState,
-  setFollowState,
-  postNumber,
-}) => {
+const UserIntroduction = ({ setModal, setSomeoneInfo, someoneInfo }) => {
   const { userInfo, isLoggedIn } = useContext(UserContext);
   const navigation = useNavigate();
   const { userId } = useParams();
@@ -43,33 +33,41 @@ const UserIntroduction = ({
     if (!isLoggedIn) {
       alert("로그인을 해주세요");
     }
-    if (followState) {
+    if (someoneInfo.followState) {
       await toggleFollow("DELETE", false);
+      setSomeoneInfo((prev) => {
+        return { ...prev, followerCnt: +prev["followerCnt"] - 1 };
+      });
     } else {
       await toggleFollow("POST", true);
+      setSomeoneInfo((prev) => {
+        return { ...prev, followerCnt: +prev["followerCnt"] + 1 };
+      });
     }
   };
 
   const toggleFollow = async (method, state) => {
     const returnValue = await changeFollowStateFetch(method, userId);
     if (returnValue) {
-      setFollowState(state);
+      setSomeoneInfo((prev) => {
+        return { ...prev, followState: state };
+      });
     }
   };
 
   const showFollowerListModal = () => {
-    if (followerCnt === 0) return;
+    if (someoneInfo.followerCnt === 0) return;
     setFollowerListModal(true);
   };
 
   const showFollowListModal = () => {
-    if (followingCnt === 0) return;
+    if (someoneInfo.followingCnt === 0) return;
     setFollowingListModal(true);
   };
   return (
     <>
       <div className="mb-10">
-        {userInfo.nickName === nickName ? (
+        {userInfo.nickName === someoneInfo.nickName ? (
           <div className="absolute right-0 flex gap-5">
             <button onClick={clickEditProfile} className="button">
               프로필 수정
@@ -82,42 +80,55 @@ const UserIntroduction = ({
           <div className="absolute right-0 flex gap-5">
             <button
               onClick={followUser}
-              className={`${followState ? "target-button" : "button"}`}
+              className={`${
+                someoneInfo.followState ? "target-button" : "button"
+              }`}
             >
-              {followState ? "팔로잉" : "팔로우"}
+              {someoneInfo.followState ? "팔로잉" : "팔로우"}
             </button>
           </div>
         )}
         <div className="flex ml-[200px] text-main mb-10">
           <img
             alt="유저 이미지"
-            src={userImage ? `${userImage}` : basicProfile}
+            src={
+              someoneInfo.userImage ? `${someoneInfo.userImage}` : basicProfile
+            }
             className="max-w-[150px] max-h-[150px] min-w-[150px] min-h-[150px] mr-5 object-cover object-center rounded-full"
           />
           <ul>
-            <li className="text-2xl font-bold">{nickName}</li>
-            <li>{introduction}</li>
+            <li className="text-2xl font-bold">{someoneInfo.nickName}</li>
+            <li>{someoneInfo.introduction}</li>
           </ul>
         </div>
         <div className="flex justify-center">
           <ul className="flex justify-evenly border-y-2 border-main text-main w-3/5">
             <li className="flex flex-col text-center">
               <span>게시물</span>
-              <span>{formatNumber({ notation: "compact" }, postNumber)}</span>
+              <span>
+                {formatNumber({ notation: "compact" }, someoneInfo.postCnt)}
+              </span>
             </li>
             <li
               onClick={showFollowerListModal}
               className="flex flex-col text-center cursor-pointer"
             >
               <span>팔로워</span>
-              <span>{formatNumber({ notation: "compact" }, followerCnt)}</span>
+              <span>
+                {formatNumber({ notation: "compact" }, someoneInfo.followerCnt)}
+              </span>
             </li>
             <li
               onClick={showFollowListModal}
               className="flex flex-col text-center cursor-pointer"
             >
               <span>팔로잉</span>
-              <span>{formatNumber({ notation: "compact" }, followingCnt)}</span>
+              <span>
+                {formatNumber(
+                  { notation: "compact" },
+                  someoneInfo.followingCnt
+                )}
+              </span>
             </li>
           </ul>
         </div>

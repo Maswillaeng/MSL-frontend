@@ -12,6 +12,9 @@ import AuthTest from "../Components/AuthTest";
 import Admin from "../pages/Admin";
 import TagPage from "../pages/TagPage";
 import Search from "../pages/Search";
+import SubscribeBoard from "../pages/SubscribeBoard";
+import AccountFind from "../pages/AccountFind";
+import ResetPassword from "../pages/ResetPassword";
 
 const onlyLogin = "ONLY_LOGIN";
 const onlyLogout = "ONLY_LOGOUT";
@@ -26,10 +29,25 @@ const router = createBrowserRouter([
         element: AuthTest(Board, null),
       },
       {
+        path: "subscribe",
+        element: AuthTest(SubscribeBoard, onlyLogin),
+      },
+      {
         path: "sign",
         element: AuthTest(Signup, onlyLogout),
       },
-      { path: "login", element: AuthTest(Login, onlyLogout) },
+      {
+        path: "login",
+        element: AuthTest(Login, onlyLogout),
+      },
+      {
+        path: "login/account-info-find",
+        element: AuthTest(AccountFind, onlyLogout),
+      },
+      {
+        path: "login/reset-password",
+        element: AuthTest(ResetPassword, onlyLogout),
+      },
       {
         path: "post/create",
         element: AuthTest(BoardCreate, onlyLogin),

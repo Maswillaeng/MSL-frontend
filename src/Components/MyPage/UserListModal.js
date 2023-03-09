@@ -35,7 +35,13 @@ const UserListModal = ({ title, setModal, id }) => {
         <UserList>
           {userList.map((ele) => (
             <li className="flex items-center ml-10 gap-3" key={ele.userId}>
-              <Link onClick={() => setModal(false)} to={`/users/${ele.userId}`}>
+              <Link
+                onClick={() => {
+                  setModal(false);
+                  window.location.replace(`/users/${ele.userId}`);
+                }}
+                to={`/users/${ele.userId}`}
+              >
                 <img
                   className="w-[40px] h-[40px] rounded-full"
                   alt="유저 이미지"

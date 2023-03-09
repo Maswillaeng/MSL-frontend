@@ -66,12 +66,20 @@ const Login = () => {
             로그인
           </button>
         </form>
-        <button
-          className="text-sm mt-2 hover:border-b-2 border-black"
-          onClick={() => navigation("/sign")}
-        >
-          회원가입&rarr;
-        </button>
+        <div className="text-sm mt-2 flex w-full justify-center gap-5">
+          <button
+            className="hover:border-b-2 border-black"
+            onClick={() => navigation("/sign")}
+          >
+            회원가입&rarr;
+          </button>
+          <button
+            onClick={() => navigation("/")}
+            className="hover:border-b-2 border-black"
+          >
+            비밀번호 찾기&rarr;
+          </button>
+        </div>
       </div>
       {isLoading ? <Loading /> : null}
     </>

@@ -2,7 +2,11 @@ import "../styles/input.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faWineGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faPen,
+  faWineGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../context/user-context";
 import { logoutFetch } from "../api/userFetch";
@@ -34,7 +38,7 @@ const Header = () => {
   return (
     <div
       id="top"
-      className="h-16 flex justify-around items-center bg-sub sticky top-0 z-30"
+      className="h-16 w-screen flex justify-around items-center bg-sub sticky top-0 z-30"
     >
       <div className="text-main font-bold text-3xl">
         <Link
@@ -47,7 +51,14 @@ const Header = () => {
         >
           Maswillaeng
         </Link>
-        <Link className="block md:hidden" to={"/"}>
+        <Link
+          className="block md:hidden"
+          to={`/${
+            localStorage.getItem("postCategory")
+              ? `?category=${localStorage.getItem("postCategory")}`
+              : ""
+          }`}
+        >
           <FontAwesomeIcon icon={faWineGlass} />
         </Link>
       </div>
@@ -60,6 +71,11 @@ const Header = () => {
                 icon={faMagnifyingGlass}
               />
             </Link>
+            <div>
+              <Link to={"/post/create"}>
+                <FontAwesomeIcon className="text-main" icon={faPen} />
+              </Link>
+            </div>
             <label className="relative">
               <div className="flex items-center gap-1">
                 <DropDown

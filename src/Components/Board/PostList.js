@@ -1,13 +1,8 @@
 import Loading from "../Loading";
 import styled from "styled-components";
 import Card from "../Card";
-import useFetch from "../../hooks/useFetch";
 
-const PostList = ({ category }) => {
-  const url = `${process.env.REACT_APP_BASE_URL}/api/post${
-    category ? `?category=${category}` : ""
-  }`;
-  const [{ data: post }, isLoading, error] = useFetch("GET", url, {});
+const PostList = ({ post, isLoading }) => {
   return (
     <>
       {isLoading ? (
@@ -29,7 +24,7 @@ const PostList = ({ category }) => {
 
 export const GridCard = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 30px;
 `;
 
