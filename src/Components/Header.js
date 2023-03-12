@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretDown,
+  faComment,
   faPen,
   faWineGlass,
 } from "@fortawesome/free-solid-svg-icons";
@@ -14,12 +15,27 @@ import basicImage from "../assets/basic_thumbnail.png";
 import DropDown from "./UI/DropDown";
 import { useRef } from "react";
 import useFindOpenBarAndClose from "../hooks/useFindOpenBarAndClose";
+import SocketContext from "../context/socket-context";
+import { useEffect } from "react";
+import { useState } from "react";
+import { faComments } from "@fortawesome/free-regular-svg-icons";
 
 const Header = () => {
   const { isLoggedIn, setIsLoggedIn, userInfo } = useContext(UserContext);
+  const socket = useContext(SocketContext);
   const navigation = useNavigate();
   const dropDownRef = useRef(null);
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
+  const [messageAlram, setMessageAlram] = useState(false);
+
+  useEffect(() => {
+    if (!isLoggedIn || !socket) return;
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessageAlram(message);
+    };
+  });
 
   const logoutHandler = async () => {
     const response = await logoutFetch();
@@ -75,6 +91,16 @@ const Header = () => {
               <Link to={"/post/create"}>
                 <FontAwesomeIcon className="text-main" icon={faPen} />
               </Link>
+            </div>
+            <div className="relative">
+              <Link to={"/chat"}>
+                <FontAwesomeIcon className="text-main" icon={faComments} />
+              </Link>
+              {messageAlram && (
+                <span className="absolute -top-2 font-bold text-main text-xl">
+                  !
+                </span>
+              )}
             </div>
             <label className="relative">
               <div className="flex items-center gap-1">

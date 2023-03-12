@@ -1,6 +1,7 @@
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useRef, useState } from "react";
 import Header from "../Components/Header";
+import Loading from "../Components/Loading";
 import Input from "../Components/UI/Input";
 import SignInputContext from "../context/check-signInput-context";
 import { emailRule } from "../utility/input-rules";
@@ -12,6 +13,7 @@ const AccountFind = () => {
   const { isValid, error } = emailInfo;
   const [errorMessage, setErrorMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const touchedInput = () => {
     const { value } = emailRef.current;
@@ -32,6 +34,7 @@ const AccountFind = () => {
   const submitEmailToFindPassword = async (e) => {
     e.preventDefault();
     const { value } = emailRef?.current;
+    setIsLoading(true);
     try {
       const response = await fetch(`http://localhost:8080/api/pwd-reset-mail`, {
         method: "POST",
@@ -50,6 +53,7 @@ const AccountFind = () => {
     } catch (error) {
       setErrorMessage(error.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -81,9 +85,13 @@ const AccountFind = () => {
                 id="email"
                 type="email"
               />
-              <button className="button " type="submit">
-                비밀번호 찾기
-              </button>
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <button className="button " type="submit">
+                  비밀번호 찾기
+                </button>
+              )}
             </form>
           </div>
         )}

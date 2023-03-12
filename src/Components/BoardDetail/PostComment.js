@@ -38,7 +38,6 @@ const PostComment = ({ comments }) => {
 
       if (response.ok) {
         const { data } = await getPostDetailFetch(postId);
-        console.log(data);
         getPostInfo(data);
       } else {
         throw new Error("서버 에러");

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useEffect } from "react";
 
 const InfinityScroll = (
@@ -17,8 +18,7 @@ const InfinityScroll = (
         async ([entry]) => {
           if (entry.isIntersecting) {
             setCurrentPage();
-            const page = getCurrentPage + 1;
-            await getPostDataOfPage(page);
+            await getPostDataOfPage(getCurrentPage + 1);
           }
         },
         {
@@ -28,6 +28,13 @@ const InfinityScroll = (
       observer.observe(lastCardRef.current);
     }
     return () => observer && observer.disconnect();
-  });
+  }, [
+    getCurrentPage,
+    getPostDataOfPage,
+    postLength,
+    setCurrentPage,
+    totalElements,
+    lastCardRef,
+  ]);
 };
 export default InfinityScroll;

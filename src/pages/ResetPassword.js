@@ -1,7 +1,7 @@
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { useContext, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { redirect, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../Components/Header";
 import PasswordInput from "../Components/Sign/PasswordInput";
 import Input from "../Components/UI/Input";
@@ -20,6 +20,8 @@ const ResetPassword = () => {
   const checkPasswordRef = useRef(null);
   const [password, setPassword] = useState("");
   const [searchParams] = useSearchParams();
+  const [error, setError] = useState("");
+  const navigation = useNavigate();
 
   const touchedEmail = () => {
     const { value } = emailRef.current;
@@ -62,11 +64,15 @@ const ResetPassword = () => {
           token: searchParams.get("token"),
         }),
       });
+      if (response.ok) {
+        alert("비밀번호가 성공적으로 변경 되었습니다.");
+        navigation("/login");
+      }
       if (!response.ok) {
-        throw new Error("에러");
+        throw new Error("이메일이 올바르지 않습니다.");
       }
     } catch (error) {
-      console.error(error.message);
+      setError(error.message);
     }
   };
 
@@ -78,7 +84,7 @@ const ResetPassword = () => {
     <div>
       <Header />
       <div className="flex justify-center">
-        <div className="flex flex-col items-center mt-[100px] border-2 border-main w-[500px] h-[330px]">
+        <div className="flex flex-col items-center mt-[100px] border-2 border-main w-[500px] h-[340px]">
           <span className="text-main font-bold mb-5">
             새 비밀번호를 입력해주세요
           </span>
@@ -109,6 +115,7 @@ const ResetPassword = () => {
               id="checkingPassword"
               type="password"
             />
+            {error && <span className="text-sm text-main">{error}</span>}
             <button className="button " type="submit">
               확인
             </button>

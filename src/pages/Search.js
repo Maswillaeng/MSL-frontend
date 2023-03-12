@@ -25,11 +25,26 @@ const Search = () => {
   useEffect(() => {
     const getSearchData = setTimeout(() => {
       navigation(`/search?keyword=${searchValue}`);
-      getPostOfSearchValueData();
+      getFirstPostOfSearchValueData();
     }, 500);
 
     return () => clearTimeout(getSearchData);
   }, [searchValue]);
+  //검색을하면 page1에 요청을 하잖아 검색값이 바뀔때마다 set을 해줘야할듯>?
+
+  const getFirstPostOfSearchValueData = async () => {
+    if (searchValue === "") return;
+    setIsLoading(true);
+    const response = await fetch(
+      `http://localhost:8080/api/search?keyword=${searchValue}&page=1`
+    );
+    if (response.ok) {
+      const { data } = await response.json();
+      setTotalElements(data.totalElements);
+      setPostList([...data.content]);
+    }
+    setIsLoading(false);
+  };
 
   const getPostOfSearchValueData = async (page = 1) => {
     setIsLoading(true);

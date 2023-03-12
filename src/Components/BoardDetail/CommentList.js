@@ -52,9 +52,7 @@ const recommentReducer = (state, { type, val }) => {
       });
       return newArray;
     case "DELETE_COMMENT":
-      const findIndex = copyState.commentList.findIndex(
-        (ele) => ele.commentId === val
-      );
+      const findIndex = copyState.findIndex((ele) => ele.commentId === val);
       copyState.splice(findIndex, 1);
       return copyState;
     default:
@@ -111,8 +109,11 @@ const CommentList = ({ element, basicProfile, postId }) => {
       const response = await createRecommentFetch(element.commentId, value);
 
       if (response.ok) {
-        const { data } = await getPostDetailFetch(postId);
-        getPostInfo(data);
+        const data = await getRecommentFetch(element.commentId);
+        dispatchRecommentList({
+          type: "UPDATE_RECOMMENT_LIST",
+          val: data,
+        });
       } else {
         throw new Error("서버 에러");
       }

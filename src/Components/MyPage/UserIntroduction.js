@@ -64,6 +64,33 @@ const UserIntroduction = ({ setModal, setSomeoneInfo, someoneInfo }) => {
     if (someoneInfo.followingCnt === 0) return;
     setFollowingListModal(true);
   };
+
+  const sendMessageHandler = async () => {
+    if (someoneInfo?.hasChatted) {
+      navigation(`/chat?partner_id=${userId}`);
+    } else {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/api/chat-list`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+            credentials: "include",
+          }
+        );
+        if (response.ok) {
+          navigation(`/chat?partner_id=${userId}`);
+        } else {
+          throw new Error("에러");
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  };
   return (
     <>
       <div className="mb-10">
@@ -78,6 +105,9 @@ const UserIntroduction = ({ setModal, setSomeoneInfo, someoneInfo }) => {
           </div>
         ) : (
           <div className="absolute right-0 flex gap-5">
+            <button onClick={sendMessageHandler} className="button">
+              메시지
+            </button>
             <button
               onClick={followUser}
               className={`${

@@ -15,6 +15,7 @@ import Search from "../pages/Search";
 import SubscribeBoard from "../pages/SubscribeBoard";
 import AccountFind from "../pages/AccountFind";
 import ResetPassword from "../pages/ResetPassword";
+import Chat from "../pages/Chat";
 
 const onlyLogin = "ONLY_LOGIN";
 const onlyLogout = "ONLY_LOGOUT";
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
         path: "users/:userId",
         element: AuthTest(MyPage, null),
       },
+      { path: "chat", element: AuthTest(Chat, onlyLogin) },
       { path: "tags/:tagId", element: AuthTest(TagPage, null) },
       { path: "search", element: AuthTest(Search, null) },
       { path: "admin", element: <Admin /> },

@@ -46,7 +46,6 @@ const SubscribeBoard = () => {
     getSubscribePostData,
     totalElements
   );
-  //페이지 작업 안하는지?
   return (
     <>
       <Header />
