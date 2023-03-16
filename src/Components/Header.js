@@ -1,5 +1,5 @@
 import "../styles/input.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,17 +27,19 @@ const Header = () => {
   const dropDownRef = useRef(null);
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
   const [messageAlram, setMessageAlram] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (!isLoggedIn || !socket) return;
 
+    if (location.pathname === "/chat") return;
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "ALRAM") {
         setMessageAlram(message.data);
       }
     };
-  });
+  }, [isLoggedIn, socket, location.pathname]);
 
   const logoutHandler = async () => {
     const response = await logoutFetch();

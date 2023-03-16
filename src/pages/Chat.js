@@ -85,7 +85,7 @@ const Chat = () => {
       navigation(`/chat?room-id=${id}`);
     }
     if (!roomId) return;
-    //소켓을 보낼 필요가 있을까?
+    // 소켓을 보낼 필요가 있을까?
     // if (socket) {
     //   socket.send(
     //     JSON.stringify({
@@ -95,6 +95,7 @@ const Chat = () => {
     //     })
     //   );
     // }
+    //내가 메시지를 보내고 미뇽이가 만약 채팅방에 들어와있다면  미뇽이가 채팅메ㅔ시지를 받는 순간  ACK를 서버에 보내줘서
     setRoomList((prevList) => {
       prevList.find((ele) => ele.chatRoomId === +roomId).unReadMsgCnt = 0;
       return [...prevList];
@@ -134,16 +135,32 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (socket && !socket.onmessage) {
+    if (socket) {
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log(data);
         switch (data.type) {
           case "MESSAGE":
-            console.log(data);
-            if (data.userId === userId) return;
+            const { content, createdAt, senderId, state, chatId } = data;
+
             setMessageList((prevList) => {
-              return [...prevList, data.messageInfo];
+              return [
+                ...prevList,
+                {
+                  content,
+                  senderId,
+                  createdAt,
+                  chatId,
+                  isRead: true,
+                },
+              ];
             });
+            socket.send(
+              JSON.stringify({
+                type: "ACK",
+                chatId,
+              })
+            );
             break;
           case "ACK":
             setMessageList((prevList) => {
@@ -179,6 +196,7 @@ const Chat = () => {
       container.scrollTop = container?.scrollHeight;
     }
   }, [messageContainerRef.current?.scrollHeight, roomId]);
+  console.log(messageList);
   return (
     <div>
       <Header />
