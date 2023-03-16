@@ -18,15 +18,16 @@ export const SocketProvider = (props) => {
       setSocket(null);
       return;
     }
-    console.log(userId);
+
     const newSocket = new WebSocket("ws://localhost:8080/ws");
     newSocket.onopen = () => {
-      newSocket.send(userId);
+      setSocket(newSocket);
+      newSocket.send(JSON.stringify({ type: "ENTER", userId }));
     };
     newSocket.onerror = (error) => {
+      setSocket(null);
       console.error("WebSocket error:", error);
     };
-    setSocket(newSocket);
 
     return () => {
       newSocket.close();

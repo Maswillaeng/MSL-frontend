@@ -30,6 +30,7 @@ const Board = () => {
       const { data } = await getPostListFetch(category);
       setPostDataMap((prevMap) => {
         const newData = data;
+        console.log(newData);
         return { ...prevMap, [category]: newData };
       });
       setIsLoading(false);

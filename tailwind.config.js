@@ -3,12 +3,9 @@ module.exports = {
   content: ["./src/**/*.js"],
   theme: {
     extend: {
-      backgroundImage: {
-        wine: "url('./src/assets/wine.jpg')",
-      },
-      gridTemplateColumns: {
-        16: "repeat(16, minmax(0, 1fr))",
-        footer: "200px minmax(900px, 1fr) 100px",
+      colors: {
+        main: "#AA233C",
+        sub: "#F9E6EB",
       },
     },
     boxShadow: {
@@ -33,12 +30,6 @@ module.exports = {
       "3xl": "1.953rem",
       "4xl": "2.441rem",
       "5xl": "3.052rem",
-    },
-    extend: {
-      colors: {
-        main: "#AA233C",
-        sub: "#F9E6EB",
-      },
     },
   },
   plugins: [],

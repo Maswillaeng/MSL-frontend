@@ -1,7 +1,6 @@
-import basicProfile from "../assets/basic_profile.jpg";
 import { updateToken } from "./updateToken";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const loginFetch = async (idValue, passwordValue) => {
   const response = await fetch(`${BASE_URL}/api/login`, {

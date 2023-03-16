@@ -2,23 +2,16 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useReducer, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import {
   createRecommentFetch,
   getRecommentFetch,
 } from "../../api/commentFetch";
-import {
-  deleteCommentFetch,
-  editCommentFetch,
-  getPostDetailFetch,
-  updateCommentLikeNumberFetch,
-} from "../../api/postFetch";
+import { updateCommentLikeNumberFetch } from "../../api/postFetch";
 import PostContext from "../../context/post-context";
 import UserContext from "../../context/user-context";
 import useComment from "../../hooks/useComment";
 import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
 import useToggleLike from "../../hooks/useToggleLike";
-import { changeDateFormat } from "../../utility/chage-format";
 import DropDown from "../UI/DropDown";
 import AddComment from "./AddComment";
 import CommentInfo from "./CommentInfo";
@@ -60,10 +53,9 @@ const recommentReducer = (state, { type, val }) => {
   }
 };
 
-const CommentList = ({ element, basicProfile, postId }) => {
+const CommentList = ({ element, basicProfile }) => {
   const { isLoggedIn, userInfo } = useContext(UserContext);
-  const { updateCommentLikeInfo, getPostInfo, dispatchPostInfo } =
-    useContext(PostContext);
+  const { updateCommentLikeInfo, dispatchPostInfo } = useContext(PostContext);
   const commentRef = useRef(null);
   const dropDownRef = useRef(null);
   const { toggleLike } = useToggleLike(

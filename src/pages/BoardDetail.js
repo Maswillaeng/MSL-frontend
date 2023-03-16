@@ -37,7 +37,7 @@ const BoardDetail = () => {
             postId={postInfo?.postId}
             postUserImage={postInfo?.userImage}
             createdAt={postInfo?.createdAt}
-            isReported={postInfo?.isReported}
+            isReported={postInfo?.reported}
             userInfo={userInfo}
             postUserId={postInfo.userId}
           />

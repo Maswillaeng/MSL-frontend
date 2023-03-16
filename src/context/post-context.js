@@ -9,11 +9,15 @@ const PostContext = createContext({
   deleteComment: () => {},
   updateCommentLikeInfo: () => {},
   dispatchPostInfo: () => {},
+  reportPost: () => {},
 });
 
 const postInfoReducer = (state, { type, val }) => {
   let copyState = JSON.parse(JSON.stringify(state));
   switch (type) {
+    case "UPDATE_REPORT_STATE":
+      copyState.reported = val;
+      return copyState;
     case "UPDATE_POST":
       copyState = val;
       return copyState;
@@ -56,6 +60,13 @@ const postInfoReducer = (state, { type, val }) => {
 
 export const PostProvider = (props) => {
   const [postInfo, dispatchPostInfo] = useReducer(postInfoReducer, {});
+
+  const reportPost = (state) => {
+    dispatchPostInfo({
+      type: "UPDATE_REPORT_STATE",
+      val: state,
+    });
+  };
 
   const getPostInfo = (postObj) => {
     dispatchPostInfo({
@@ -109,6 +120,7 @@ export const PostProvider = (props) => {
         deleteComment,
         updateCommentLikeInfo,
         dispatchPostInfo,
+        reportPost,
       }}
     >
       {props.children}

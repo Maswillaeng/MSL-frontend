@@ -33,7 +33,9 @@ const Header = () => {
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      setMessageAlram(message);
+      if (message.type === "ALRAM") {
+        setMessageAlram(message.data);
+      }
     };
   });
 

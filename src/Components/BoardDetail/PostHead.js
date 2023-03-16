@@ -7,6 +7,8 @@ import useFindOpenBarAndClose from "../../hooks/useFindOpenBarAndClose";
 import { changeDateFormat } from "../../utility/chage-format";
 import DropDown from "../UI/DropDown";
 import basicProfile from "../../assets/basic_thumbnail.png";
+import PostContext from "../../context/post-context";
+import { reportPostFetch } from "../../api/reportFetch";
 
 const menuButtonText = ` <svg fill="#AA233C" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
     <path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z" />
@@ -23,6 +25,7 @@ const PostHead = ({
 }) => {
   const navigation = useNavigate();
   const { isLoggedIn } = useContext(UserContext);
+  const { reportPost } = useContext(PostContext);
   const dropDownRef = useRef(null);
   const [isOpen, setIsOpen] = useFindOpenBarAndClose(dropDownRef, false);
 
@@ -39,6 +42,25 @@ const PostHead = ({
       navigation(`/post/detail/${postId}`);
     }
   };
+
+  const toggleReportPost = async () => {
+    if (isReported) {
+      const response = await reportPostFetch("DELETE", postId);
+      if (response.ok) {
+        reportPost(false);
+        alert("신고가 취소되었습니다.");
+        console.log("hi");
+      }
+    } else {
+      const response = await reportPostFetch("POST", postId);
+      if (response.ok) {
+        reportPost(true);
+        alert("해당 게시물이 신고 되었습니다.");
+        console.log("hi");
+      }
+    }
+  };
+  console.log(isReported);
   return (
     <div className="flex justify-between border-b-2 border-main pb-5">
       <div className="flex">
@@ -82,7 +104,9 @@ const PostHead = ({
                     </li>
                   </>
                 ) : null}
-                <li className="pointer">신고</li>
+                <li className="pointer" onClick={toggleReportPost}>
+                  신고
+                </li>
               </ul>
             ) : null}
           </label>

@@ -1,6 +1,3 @@
-import { ContentState, convertToRaw, EditorState } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getPostDetailFetch, updatePostFetch } from "../api/postFetch";
@@ -13,7 +10,7 @@ import PostOption from "../Components/UI/PostOption";
 const ModifyBoard = () => {
   const { postId } = useParams();
   const navigation = useNavigate();
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorValue, setEditorValue] = useState("");
   const [title, setTitle] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -24,10 +21,6 @@ const ModifyBoard = () => {
       setThumbnail(imageArray[0]);
     }
   };
-
-  const editorToHtml = draftToHtml(
-    convertToRaw(editorState.getCurrentContent())
-  );
 
   const submitUpdatePost = async (e) => {
     e.preventDefault();
@@ -42,7 +35,7 @@ const ModifyBoard = () => {
     await updatePostFetch(
       thumbnail,
       title,
-      editorToHtml,
+      editorValue,
       postId,
       categoryId,
       tagList
@@ -50,23 +43,11 @@ const ModifyBoard = () => {
     navigation(`/post/detail/${postId}`);
   };
 
-  const changeHtmlToDraft = (content) => {
-    const blocksFromHtml = htmlToDraft(content);
-
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(
-      contentBlocks,
-      entityMap
-    );
-    const editorState = EditorState.createWithContent(contentState);
-    setEditorState(editorState);
-  };
-
   useEffect(() => {
     const getPostData = async () => {
       const { data } = await getPostDetailFetch(postId);
       setTitle(data.title);
-      changeHtmlToDraft(data.content);
+      setEditorValue(data.content);
       setTagList(data.hashTagList);
     };
     getPostData();
@@ -85,9 +66,8 @@ const ModifyBoard = () => {
             setCategoryId={setCategoryId}
           />
           <PostContent
-            editorState={editorState}
-            setEditorState={setEditorState}
-            editorToHtml={editorToHtml}
+            editorValue={editorValue}
+            setEditorValue={setEditorValue}
             getUploadImageArray={getUploadImageArray}
           />
           <PostFooter categoryId={categoryId} setCategoryId={setCategoryId} />

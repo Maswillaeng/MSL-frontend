@@ -1,4 +1,6 @@
+import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
+import "react-quill/dist/quill.bubble.css";
 
 const PostMain = ({ title, content, tagList }) => {
   return (
@@ -13,10 +15,7 @@ const PostMain = ({ title, content, tagList }) => {
           ))}
         </div>
       </div>
-      <div
-        className="w-full break-keep h-auto mt-5  border-b-2 border-main pb-5"
-        dangerouslySetInnerHTML={{ __html: content }}
-      ></div>
+      <ReactQuill value={content} readOnly={true} theme={"bubble"} />
     </>
   );
 };

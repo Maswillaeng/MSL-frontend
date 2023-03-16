@@ -67,7 +67,7 @@ const UserIntroduction = ({ setModal, setSomeoneInfo, someoneInfo }) => {
 
   const sendMessageHandler = async () => {
     if (someoneInfo?.hasChatted) {
-      navigation(`/chat?partner_id=${userId}`);
+      navigation(`/chat?room-id=${userId}`);
     } else {
       try {
         const response = await fetch(

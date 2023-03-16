@@ -1,11 +1,8 @@
 import Header from "../Components/Header";
 import React, { useContext, useEffect, useState } from "react";
 import "../styles/input.css";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import htmlToDraft from "html-to-draftjs";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useNavigate } from "react-router-dom";
-import draftToHtml from "draftjs-to-html";
 import { createPostFetch } from "../api/postFetch";
 import Loading from "../Components/Loading";
 import UserContext from "../context/user-context";
@@ -19,8 +16,8 @@ const BoardCreate = () => {
   const navigation = useNavigate();
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isLoading, setIsLoading] = useState(false);
+  const [editorValue, setEditorValue] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [tagList, setTagList] = useState([]);
 
@@ -29,10 +26,6 @@ const BoardCreate = () => {
       setThumbnail(imageArray[0]);
     }
   };
-
-  const editorToHtml = draftToHtml(
-    convertToRaw(editorState.getCurrentContent())
-  );
 
   const submitPostData = async (e) => {
     e.preventDefault();
@@ -45,10 +38,11 @@ const BoardCreate = () => {
       return;
     }
     setIsLoading(true);
+    console.log(title, editorValue, categoryId, thumbnail, tagList);
     await createPostFetch(
       userInfo.nickName,
       title,
-      editorToHtml,
+      editorValue,
       categoryId,
       thumbnail,
       tagList
@@ -61,23 +55,16 @@ const BoardCreate = () => {
 
   useEffect(() => {
     const title = localStorage.getItem("createTitle") ?? "";
-    const content = localStorage.getItem("createContent") ?? "<p></p> ";
-    const blocksFromHtml = htmlToDraft(content);
+    const content = localStorage.getItem("createContent") ?? "";
 
     let userAnswer;
-    if (title.length !== 0 || content !== `<p></p>${content[7]}`) {
-      const { contentBlocks, entityMap } = blocksFromHtml;
-      const contentState = ContentState.createFromBlockArray(
-        contentBlocks,
-        entityMap
-      );
-      const editorState = EditorState.createWithContent(contentState);
+    if (title.length !== 0 || content.length !== 0) {
       userAnswer = window.confirm(
         "작성 중인 글이 있어요.\n글을 이어서 쓰시겠어요?"
       );
       if (userAnswer) {
         setTitle(title);
-        setEditorState(editorState);
+        setEditorValue(content);
       }
     }
   }, []);
@@ -100,9 +87,8 @@ const BoardCreate = () => {
               setCategoryId={setCategoryId}
             />
             <PostContent
-              editorState={editorState}
-              setEditorState={setEditorState}
-              editorToHtml={editorToHtml}
+              editorValue={editorValue}
+              setEditorValue={setEditorValue}
               getUploadImageArray={getUploadImageArray}
               localStorageKey="createContent"
             />
