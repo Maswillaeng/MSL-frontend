@@ -18,7 +18,6 @@ export const SocketProvider = (props) => {
       setSocket(null);
       return;
     }
-
     const newSocket = new WebSocket("ws://localhost:8080/chat");
     newSocket.onopen = () => {
       setSocket(newSocket);

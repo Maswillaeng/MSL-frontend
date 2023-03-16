@@ -129,7 +129,11 @@ const Chat = () => {
       const { data } = await response.json();
       console.log(data);
       setMessageList(data.chatMessageList);
-      setOpponentInfo({ nickName: data.nickName, userImage: data.userImage });
+      setOpponentInfo({
+        nickName: data.nickName,
+        userImage: data.userImage,
+        partnerId: data.partnerId,
+      });
     }
   };
 
@@ -158,15 +162,15 @@ const Chat = () => {
   const sendMessage = () => {
     const { value } = sendMessageRef?.current;
     const chatId = uuidv4();
-    const createAt = Date.now();
+    const createdAt = Date.now();
     if (sendMessageRef && socket) {
       const newMessage = {
         type: "MESSAGE",
         content: value,
-        opponentId: opponentInfo.opponentId,
-        createAt,
+        recipientId: opponentInfo.partnerId,
+        senderId: userId,
+        createdAt,
         chatId,
-        isRead: false,
       };
       socket.send(JSON.stringify(newMessage));
     }
@@ -176,7 +180,7 @@ const Chat = () => {
         {
           content: value,
           userId,
-          createAt,
+          createdAt,
           chatId,
           isRead: false,
         },
