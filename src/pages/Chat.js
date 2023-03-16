@@ -104,7 +104,9 @@ const Chat = () => {
   const sendMessage = () => {
     const { value } = sendMessageRef?.current;
     const chatId = uuidv4();
-    const createdAt = Date.now();
+    const date = new Date();
+    const createdAt = date.toISOString();
+
     if (sendMessageRef && socket) {
       const newMessage = {
         type: "MESSAGE",
