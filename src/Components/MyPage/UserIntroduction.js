@@ -71,18 +71,17 @@ const UserIntroduction = ({ setModal, setSomeoneInfo, someoneInfo }) => {
     } else {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/chat-list`,
+          `${process.env.REACT_APP_BASE_URL}/api/create/chat-room/${userId}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ userId }),
             credentials: "include",
           }
         );
         if (response.ok) {
-          navigation(`/chat?partner_id=${userId}`);
+          navigation(`/chat?room-id=${userId}`);
         } else {
           throw new Error("에러");
         }

@@ -105,13 +105,14 @@ const Chat = () => {
 
   const getRoomList = async () => {
     const response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/api/room-list`,
+      `${process.env.REACT_APP_BASE_URL}/api/chat-room/list`,
       {
         credentials: "include",
       }
     );
     if (response.ok) {
-      const data = await response.json();
+      const { data } = await response.json();
+      console.log(data);
       setRoomList(data);
     }
   };
@@ -119,15 +120,16 @@ const Chat = () => {
   const getMessageList = async () => {
     if (!roomId) return;
     const response = await fetch(
-      `http://localhost:8080/api/chat-list/${roomId}`,
+      `http://localhost:8080/api/chat/list/${roomId}`,
       {
         credentials: "include",
       }
     );
     if (response.ok) {
-      const data = await response.json();
-      setMessageList(data.messageList);
-      setOpponentInfo(data.opponentInfo);
+      const { data } = await response.json();
+      console.log(data);
+      setMessageList(data.chatMessageList);
+      setOpponentInfo({ nickName: data.nickName, userImage: data.userImage });
     }
   };
 
@@ -159,7 +161,7 @@ const Chat = () => {
     const createAt = Date.now();
     if (sendMessageRef && socket) {
       const newMessage = {
-        type: "DM",
+        type: "MESSAGE",
         content: value,
         opponentId: opponentInfo.opponentId,
         createAt,
@@ -260,7 +262,8 @@ const Chat = () => {
                     </div>
                     <div className="flex flex-col text-[10px] pt-1 gap-1 items-center">
                       <span>
-                        {changeDateFormat(element.lastMessageTime, {})}
+                        {element.lastMessageTime &&
+                          changeDateFormat(element.lastMessageTime, {})}
                       </span>
                       <span className="text-sub">
                         {element.unReadMsgCnt === 0 ? null : (

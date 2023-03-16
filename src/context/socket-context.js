@@ -19,7 +19,7 @@ export const SocketProvider = (props) => {
       return;
     }
 
-    const newSocket = new WebSocket("ws://localhost:8080/ws");
+    const newSocket = new WebSocket("ws://localhost:8080/chat");
     newSocket.onopen = () => {
       setSocket(newSocket);
       newSocket.send(JSON.stringify({ type: "ENTER", userId }));
