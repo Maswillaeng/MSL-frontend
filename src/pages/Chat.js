@@ -123,7 +123,7 @@ const Chat = () => {
         ...prevList,
         {
           content: value,
-          userId,
+          senderId: userId,
           createdAt,
           chatId,
           isRead: false,
@@ -138,7 +138,8 @@ const Chat = () => {
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         switch (data.type) {
-          case "DM":
+          case "MESSAGE":
+            console.log(data);
             if (data.userId === userId) return;
             setMessageList((prevList) => {
               return [...prevList, data.messageInfo];
@@ -239,7 +240,7 @@ const Chat = () => {
                   className="grow px-10 py-3 overflow-y-auto"
                 >
                   {messageList.map((ele) =>
-                    ele.userId === +userId ? (
+                    ele.senderId === +userId ? (
                       <div
                         key={ele.chatId}
                         className="flex flex-row-reverse mt-3 ml-[100px]"
