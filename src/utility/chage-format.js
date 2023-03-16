@@ -3,6 +3,7 @@ export const formatNumber = (option, number) => {
 };
 
 export const changeDateFormat = (time, option) => {
+  console.log(time);
   const oneDay = new Date(60 * 60 * 24 * 1000);
   const oneHour = new Date(60 * 60 * 1000);
   const oneSec = new Date(60 * 1000);

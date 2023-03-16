@@ -42,65 +42,7 @@ const Chat = () => {
       lastMessageTime: "2023-03-14T01:20:56.459073",
     },
   ]);
-  const [messageList, setMessageList] = useState([
-    {
-      content:
-        "asdfknlawkenflkwaedddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-      userId: 3,
-      createAt: Date.now(),
-      chatId: 2,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 1,
-      createAt: Date.now(),
-      chatId: 3,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 3,
-      createAt: Date.now(),
-      chatId: 4,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 3,
-      createAt: Date.now(),
-      chatId: 5,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 1,
-      createAt: Date.now(),
-      chatId: 6,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 1,
-      createAt: Date.now(),
-      chatId: 7,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 3,
-      createAt: Date.now(),
-      chatId: 8,
-      isRead: false,
-    },
-    {
-      content: "asdfknlawkenflkwae",
-      userId: 3,
-      createAt: Date.now(),
-      chatId: 9,
-      isRead: false,
-    },
-  ]);
+  const [messageList, setMessageList] = useState([]);
   const sendMessageRef = useRef(null);
 
   const getRoomList = async () => {
@@ -322,7 +264,7 @@ const Chat = () => {
                           )}
                         </div>
                         <div className="text-[10px] break-keep w-[70px] min-w-[70px] self-end">
-                          {changeDateFormat(ele.createAt, {
+                          {changeDateFormat(ele.createdAt, {
                             dateStyle: "medium",
                             timeStyle: "short",
                           })}
@@ -365,7 +307,7 @@ const Chat = () => {
                           </div>
                         </div>
                         <div className="text-[10px] break-keep w-[70px] min-w-[70px] self-end text-right">
-                          {changeDateFormat(ele.createAt, {
+                          {changeDateFormat(ele.createdAt, {
                             dateStyle: "medium",
                             timeStyle: "short",
                           })}
